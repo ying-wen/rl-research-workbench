@@ -13,7 +13,7 @@
       },
       "actual_interactions": 13308,
       "maximum_interactions": 14400,
-      "lock_sha256": "03d5ab9e2d4a98e7f114770409451e23099d90b2c49cfbfd38049b06460fc933",
+      "lock_sha256": "f52d7d9e2e88e3958e6111a539427e53d25d97f04521f24d0a273efbf4fb79fb",
       "comparison_claim_status": "workflow_smoke_only"
     },
     {
@@ -26,7 +26,7 @@
       },
       "actual_interactions": 12000,
       "maximum_interactions": 12000,
-      "lock_sha256": "27f50936884d8fc9f2e60988e30e6c6a093c9feae43e2d28cdf4f67273914b91",
+      "lock_sha256": "36dcbd9946960c661e5845ad8148bf35b1dc1bbd9f8f2ed37dddfca1b128a1d4",
       "comparison_claim_status": "workflow_smoke_only"
     },
     {
@@ -39,7 +39,7 @@
       },
       "actual_interactions": 1534,
       "maximum_interactions": 1824,
-      "lock_sha256": "580c2ed9a1bdc172bf24fa992ca733cfa91adf2613b96b7c7ce2de5805314eb4",
+      "lock_sha256": "f9007e2138f5316220d58f8e4dc4593765e57388e37b02da397249d54a9e2f0a",
       "comparison_claim_status": "workflow_smoke_only"
     }
   ],
@@ -65,7 +65,7 @@
     "tests/test_cli.py": "2334a04a8a4b58e783dbf05dd8c2d17f57ec3157dc1d4d671dec543c76d19be9",
     "tests/test_continual_metrics.py": "2827670af6df375f8c6d672f020a55b7271d5dea2e7fe22ff4cdd7a92d20860e",
     "tests/test_contracts.py": "0fe7e0c2e67d12271153ada02f75931d9dbf8d3be7bf9b85d5b888db6a7781cf",
-    "tests/test_engines.py": "64d67fcd96e928fef479b3b6c5ab55d61bc83dd19ca372de8dfd1967f1955075",
+    "tests/test_engines.py": "1665c99ec4c26e77f0e57ac0d8f2860d03e91dae7a121f38cb33a4ce6e945e73",
     "tests/test_workflow.py": "b5f1b877ca3877b123df1ceef653e00cd5e0cfb1d23913aaf602ca0dd157e01b",
     "pyproject.toml": "95b273f5d4e57835e582455426d52642ca7fe1ec027dc5b7dfd41ccad3d6e8e4"
   },
@@ -88,5 +88,10 @@
     "Original project adapters and long-horizon matrices remain proposed and unexecuted.",
     "GVF/options/planning/MARL module contracts are structural, not executable integrations.",
     "No printed PDF or standalone site validation in this repository delivery."
-  ]
+  ],
+  "corrected_validation_issue": {
+    "initial_ci": "https://github.com/ying-wen/rl-research-workbench/actions/runs/37122503554",
+    "cause": "Exact test equality between sequential += and Python3.12 compensated sum. Engine unchanged.",
+    "correction": "math.fsum reference with sequential summation rounding bound; raw population and clock checks retained."
+  }
 }

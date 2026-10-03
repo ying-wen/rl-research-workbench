@@ -5,6 +5,7 @@ import json
 import math
 import os
 import random
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -80,8 +81,17 @@ class EngineTests(unittest.TestCase):
         for algorithm in ("epsilon_greedy_sample_average", "epsilon_greedy_constant_alpha"):
             result, events = self.run_job(job(algorithm))
             self.assertEqual(len(events), result["steps"])
-            self.assertEqual(sum(e["reward"] for e in events), result["diagnostics"]["training_reward_sum"])
-            self.assertEqual(sum(e["reward"] for e in events) / len(events), result["metrics"]["mean_reward"])
+            rewards = [e["reward"] for e in events]
+            reference = math.fsum(rewards)
+            # Python 3.12 sum uses compensated summation; the online engine uses
+            # +=. Check the standard sequential floating-point error bound,
+            # not accidental bit equality between different summation methods.
+            unit_roundoff = sys.float_info.epsilon / 2
+            gamma_n = len(rewards) * unit_roundoff / (1 - len(rewards) * unit_roundoff)
+            bound = gamma_n * math.fsum(abs(r) for r in rewards) + math.ulp(reference)
+            self.assertLessEqual(abs(reference - result["diagnostics"]["training_reward_sum"]), bound)
+            mean = reference / len(rewards)
+            self.assertLessEqual(abs(mean - result["metrics"]["mean_reward"]), bound / len(rewards) + math.ulp(mean))
             self.assertEqual([e["env_step"] for e in events], list(range(1, 101)))
             self.assertTrue(all(math.isfinite(e["reward"]) for e in events))
 
