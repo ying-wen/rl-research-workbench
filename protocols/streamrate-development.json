@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "study_id": "streamrate-crl-development-proposal-v1",
+  "track": "continual",
+  "purpose": "development",
+  "question": "Do legal-state delayed-return rate controls improve full-lifetime adaptation beyond strong complete external methods and simpler shared-base rate rules?",
+  "hypothesis": "A StreamRate increment must survive module-only/shifted/fixed controls and external baselines; this proposed pilot cannot confirm that rate control substitutes for a different actor or critic target.",
+  "primary_metric": "mean_reward",
+  "direction": "maximize",
+  "minimum_effect": 0.01,
+  "seeds": [
+    31001,
+    31003,
+    31009
+  ],
+  "holdout_seeds": [
+    71001,
+    71003,
+    71009,
+    71011,
+    71017
+  ],
+  "budget": {
+    "steps": 400148,
+    "eval_episodes": 0,
+    "max_eval_steps": 0,
+    "max_total_steps": 28810656
+  },
+  "selection": {
+    "mode": "preselected",
+    "uses": "development_only",
+    "rule": "Proposed author-default anchors and named mechanism controls. No HPO is performed by this protocol. Resolve exact versions/configurations and seed reservation in a new registered external protocol before execution. Any later method-specific HPO is a separate study with equal declared search resources; freeze selection before independent confirmation."
+  },
+  "failure_policy": {
+    "mode": "score_floor",
+    "score_floor": -100.0
+  },
+  "baseline_ids": [
+    "stream_ac_author",
+    "metatrace_vector_port",
+    "metatrace_mixed_port",
+    "intentional_ac_author"
+  ],
+  "arms": [
+    {
+      "id": "stream_ac_author",
+      "algorithm": "external_stream_ac_author",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "configuration": "author_default_anchor",
+        "network": "original_independent_actor_critic"
+      }
+    },
+    {
+      "id": "metatrace_vector_port",
+      "algorithm": "external_metatrace_equation_port",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "variant": "vector",
+        "configuration": "method_specific_default_pending_qualification",
+        "identity": "equation_port_not_author_code_reproduction"
+      }
+    },
+    {
+      "id": "metatrace_mixed_port",
+      "algorithm": "external_metatrace_equation_port",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "variant": "Mixed",
+        "configuration": "method_specific_default_pending_qualification",
+        "identity": "equation_port_not_author_code_reproduction"
+      }
+    },
+    {
+      "id": "intentional_ac_author",
+      "algorithm": "external_intentional_ac_author",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "configuration": "author_functional_eta_default",
+        "std_floor_repair": false,
+        "unsupported_interface_policy": "register_gap_not_silent_deletion"
+      }
+    },
+    {
+      "id": "streamrate",
+      "algorithm": "external_streamrate",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "rate_features": "legal_local_state",
+        "meta_target": "delayed_return_of_actual_learning_modification",
+        "K_h_meta_rate": "fixed_registered",
+        "base": "V_critic_streaming_ac"
+      }
+    },
+    {
+      "id": "streamrate_module_only",
+      "algorithm": "external_streamrate_module_only",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "rate_features": "module_only",
+        "base": "same_as_streamrate"
+      }
+    },
+    {
+      "id": "streamrate_shifted_features",
+      "algorithm": "external_streamrate_shifted_features",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "shift_rule": "legal_causal_shift_registered_before_run",
+        "base": "same_as_streamrate"
+      }
+    },
+    {
+      "id": "streamrate_functional_fixed",
+      "algorithm": "external_streamrate_functional_fixed",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "rate_control": "fixed_functional_bridge",
+        "base": "same_as_streamrate"
+      }
+    }
+  ],
+  "envs": [
+    {
+      "id": "pendulum_static",
+      "environment": "external_gym_pendulum_v1",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "reward": "native_unscaled",
+        "observation": "native",
+        "time_limit": "native_200",
+        "change_signal_to_policy": false
+      }
+    },
+    {
+      "id": "pendulum_gravity_abac",
+      "environment": "external_pendulum_gravity_abac_v1",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "schedule_status": "new_diagnostic_proposal_not_existing_benchmark",
+        "phase_sequence": [
+          "A",
+          "B",
+          "A",
+          "C"
+        ],
+        "period_transitions": 100037,
+        "change_indices_zero_based": [
+          100037,
+          200074,
+          300111
+        ],
+        "switch_causes_reset": false,
+        "change_signal_to_policy": false,
+        "task_id_to_policy": false,
+        "time_limit": 200,
+        "reward": "native_pendulum_reward_same_scale",
+        "outside_rng_separate_from_policy": true,
+        "gravity_by_phase": {
+          "A": 10.0,
+          "B": 7.5,
+          "C": 12.5
+        },
+        "observation": "native_no_gravity_parameter"
+      }
+    },
+    {
+      "id": "reacher_static",
+      "environment": "external_gym_reacher_v4",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "reward": "native_unscaled",
+        "observation": "native",
+        "time_limit": "native_version_pinned",
+        "change_signal_to_policy": false
+      }
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "https://jmlr.org/papers/v25/23-0183.html",
+      "https://arxiv.org/abs/2410.14606v3",
+      "https://www.ijcai.org/proceedings/2019/581",
+      "https://jair.org/index.php/jair/article/view/13673",
+      "https://arxiv.org/abs/2604.19033"
+    ]
+  },
+  "checks": {
+    "implementation": [
+      "Qualify author Stream-AC and Intentional-AC call chains; verify Metatrace scalar/vector/Mixed identity, complete TD derivative, entropy and continuous-policy conventions.",
+      "Check prequential order: action uses available state; delayed meta credit is assigned causally; current rate is applied at the declared update event without future rewards.",
+      "Keep original numerical failures; any std floor or bound repair is a separately named algorithm and new run population."
+    ],
+    "mechanism": [
+      "Separate actor target, critic evaluation, step-size magnitude and delayed-credit use. Positive bounded multipliers cannot generally change zero support or coordinate signs.",
+      "Compare StreamRate against module-only, causal shifted-features and functional-fixed controls without altering their shared actor/critic objectives.",
+      "Stage Q-base 2x2 target-by-rate diagnostic separately: advantage/elite actor target crossed with fixed/meta rates; do not call this V-critic Stream-AC or original replay GreedyAC."
+    ],
+    "performance": [
+      "Score every raw reward over the complete 400148-step lifetime, including transient switch losses and partial final episodes.",
+      "Report all external baselines, failures and missing cells. Incomplete strong-baseline coverage blocks complete-method superiority claims.",
+      "Use independent confirmation lifetimes and unobserved schedule families; a single shift, active meta writes or exact derivatives cannot establish continual-RL improvement."
+    ]
+  },
+  "input_adapter_ready": false,
+  "design_status": "proposed_unpublished_not_registered_not_executed",
+  "seed_status": "illustrative_unallocated_must_check_existing_namespaces",
+  "registration_requirements": [
+    "Pin and hash original external code and exact dependency closure; qualify any equation ports separately.",
+    "Replace every UNREGISTERED placeholder and method-default label with exact numeric configuration; revalidate and freeze a new protocol.",
+    "Verify task reward/action/clocks and bootstrap semantics, no boundary label reaches policy, and all baseline interfaces are supported.",
+    "Reserve exclusive job/seed namespace and independent output locations; never mutate or relaunch a frozen existing population.",
+    "Predeclare task-specific failure interpretation and minimum-effect margins; the scalar floor here is a provisional composite pilot outcome, not an imputed reward or cross-task calibrated score.",
+    "Do not aggregate unnormalized raw rewards across tasks; produce task-stratified statistics and registered within-task margins."
+  ],
+  "analysis_plan": {
+    "unit": "independent complete training lifetime",
+    "secondary": [
+      "event-aligned early adaptation raw rewards",
+      "prechange-anchored recovery on comparable reward scales",
+      "A-return early reward versus first A with no reset",
+      "per-seed failure type/time and resource cost"
+    ],
+    "recovery": {
+      "window": 1000,
+      "baseline_window": 5000,
+      "persistence": 5,
+      "tolerance": 0.05,
+      "scale_comparable_required": true,
+      "threshold_status": "provisional_absolute_reward_units_calibrate_before_registration"
+    },
+    "multiplicity": "Predeclare contrasts per task; adjustment family and practical margins require registration. Do not pool raw rewards across Pendulum/Reacher.",
+    "confirmation": "Independent lifetimes and held-out schedule families after full development/HPO selection; include altered dwell times, gradual drift, cue/memory variants where relevant, and longer horizons."
+  }
+}

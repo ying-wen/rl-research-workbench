@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "study_id": "hidden-switch-bandit-smoke-v1",
+  "track": "continual",
+  "purpose": "smoke",
+  "question": "Can full-lifetime measurements expose the distinction between sample-average and recency-weighted value estimation?",
+  "hypothesis": "Constant-alpha estimates may adapt differently after hidden switches; stationary and switching controls are required to interpret any difference.",
+  "primary_metric": "mean_reward",
+  "direction": "maximize",
+  "minimum_effect": 0.05,
+  "seeds": [
+    11,
+    23
+  ],
+  "holdout_seeds": [
+    101,
+    211
+  ],
+  "selection": {
+    "mode": "preselected",
+    "rule": "Fixed configurations specified before running; smoke outcomes cannot select a winner or justify efficacy.",
+    "uses": "development_only"
+  },
+  "failure_policy": {
+    "mode": "score_floor",
+    "score_floor": -10.0
+  },
+  "baseline_ids": [
+    "sample_average"
+  ],
+  "arms": [
+    {
+      "id": "sample_average",
+      "algorithm": "epsilon_greedy_sample_average",
+      "config": {
+        "epsilon": 0.1,
+        "initial_value": 0.0
+      }
+    },
+    {
+      "id": "constant_alpha",
+      "algorithm": "epsilon_greedy_constant_alpha",
+      "config": {
+        "epsilon": 0.1,
+        "alpha": 0.1,
+        "initial_value": 0.0
+      }
+    }
+  ],
+  "envs": [
+    {
+      "id": "stationary",
+      "environment": "stationary_bandit",
+      "config": {
+        "means": [
+          1.0,
+          0.0
+        ],
+        "reward_std": 0.5
+      }
+    },
+    {
+      "id": "hidden_switches",
+      "environment": "switching_bandit",
+      "config": {
+        "phases": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "switch_interval": 250,
+        "reward_std": 0.5
+      }
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "https://incompleteideas.net/book/the-book-2nd.html",
+      "https://jmlr.org/papers/v25/23-0183.html",
+      "https://jair.org/index.php/jair/article/view/13673"
+    ]
+  },
+  "checks": {
+    "implementation": [
+      "Sample-average matches empirical sample means; constant alpha preserves recency weighting.",
+      "The complete lifetime is scored; no learner reset or task identifier is passed at boundaries."
+    ],
+    "mechanism": [
+      "Compare stationary and hidden-switch controls. Phase labels appear only in diagnostic logs.",
+      "Common potential-reward noise streams are generated independent of chosen actions."
+    ],
+    "performance": [
+      "Smoke only. This small nonstationary bandit cannot establish deep-network plasticity, general continual-RL ability, or real-world effectiveness."
+    ]
+  },
+  "budget": {
+    "steps": 1500,
+    "eval_episodes": 0,
+    "max_eval_steps": 0,
+    "max_total_steps": 12000
+  }
+}

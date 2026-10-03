@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "study_id": "classic-cliff-smoke-v1",
+  "track": "classic",
+  "purpose": "smoke",
+  "question": "Can the protocol execute and preserve terminal/truncation semantics for Q-learning and Sarsa?",
+  "hypothesis": "The two algorithms implement distinct backup targets; this smoke study does not test a performance claim.",
+  "primary_metric": "evaluation_return",
+  "direction": "maximize",
+  "minimum_effect": 5.0,
+  "seeds": [
+    11,
+    23
+  ],
+  "holdout_seeds": [
+    101,
+    211
+  ],
+  "selection": {
+    "mode": "preselected",
+    "rule": "Fixed configurations specified before running; smoke outcomes cannot select a winner or justify efficacy.",
+    "uses": "development_only"
+  },
+  "failure_policy": {
+    "mode": "score_floor",
+    "score_floor": -10000.0
+  },
+  "baseline_ids": [
+    "q_learning"
+  ],
+  "arms": [
+    {
+      "id": "q_learning",
+      "algorithm": "tabular_q_learning",
+      "config": {
+        "alpha": 0.3,
+        "gamma": 0.99,
+        "epsilon": 0.1
+      }
+    },
+    {
+      "id": "sarsa",
+      "algorithm": "tabular_sarsa",
+      "config": {
+        "alpha": 0.3,
+        "gamma": 0.99,
+        "epsilon": 0.1
+      }
+    }
+  ],
+  "envs": [
+    {
+      "id": "cliff_4x8",
+      "environment": "cliff_grid",
+      "config": {
+        "rows": 4,
+        "cols": 8,
+        "max_episode_steps": 100
+      }
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "https://incompleteideas.net/book/the-book-2nd.html",
+      "https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/"
+    ]
+  },
+  "checks": {
+    "implementation": [
+      "Terminal goal zeroes bootstrap; external time truncation retains the actual final state bootstrap.",
+      "All individual training and evaluation rewards reconcile with aggregates."
+    ],
+    "mechanism": [
+      "Verify max backup versus sampled on-policy backup with deterministic microcases."
+    ],
+    "performance": [
+      "Smoke only: no claim that either algorithm is better. Use a frozen, independently seeded confirmation study after development."
+    ]
+  },
+  "budget": {
+    "steps": 3000,
+    "eval_episodes": 6,
+    "max_eval_steps": 600,
+    "max_total_steps": 14400
+  }
+}

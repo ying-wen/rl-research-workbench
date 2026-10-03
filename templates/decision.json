@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "parent_study_id": "classic-cliff-smoke-v1",
+  "action": "revise",
+  "rationale": "The tutorial checks the execution path only. Specify a development hypothesis and adequate design before measuring efficacy.",
+  "evidence": ["runs/classic/lock.json", "runs/classic/jobs/"],
+  "changes": ["Replace this note with one mechanism change, explicit controls, and a development budget."],
+  "selected_arms": ["q_learning", "sarsa"]
+}

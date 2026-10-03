@@ -1,0 +1,198 @@
+{
+  "design_kind": "gvf_option_architecture_ablation",
+  "design_version": 1,
+  "status": "design_only_not_executable",
+  "native_integration": false,
+  "instruction": "This design is not a rlworkbench study protocol. Implement and validate an external producer, allocate a bounded population and budget, then translate into a registered external protocol before running.",
+  "question": "Do learned predictions improve the usefulness of learned options under hidden changes, beyond matched capacity, primitive experience and inference cost?",
+  "primary_outcome": {
+    "metric": "full_lifetime_raw_reward_sum",
+    "independent_unit": "complete_training_lifetime",
+    "normalization": "none within one environment; specify weights/scales before multi-environment aggregation"
+  },
+  "gvf_contract": {
+    "question_fields": [
+      "target_policy",
+      "cumulant",
+      "transition_continuation",
+      "optional_terminal_payoff"
+    ],
+    "answer_fields": [
+      "history_to_agent_state",
+      "estimator",
+      "offpolicy_correction",
+      "target_version"
+    ],
+    "required_checks": [
+      "legal information at action time",
+      "target-policy support under behavior",
+      "cumulant and discount indexing",
+      "independent prediction accuracy/calibration",
+      "pending future targets never used early"
+    ]
+  },
+  "option_contract": {
+    "fields": [
+      "initiation",
+      "intra_option_policy",
+      "termination",
+      "interrupt_rule",
+      "actual_primitive_duration"
+    ],
+    "target": "sum(D_k * reward[t+k+1], k=0..tau-1) + D_tau * continuation_value; D_k = product(gamma[t+j], j=1..k)",
+    "boundary_events": [
+      "option_termination",
+      "task_termination",
+      "external_truncation"
+    ],
+    "boundary_rule": "An option ending alone does not terminate the task. External interruption of an active option must use an algorithm-consistent continuation value."
+  },
+  "factorial_arms": [
+    {
+      "id": "g0_o0",
+      "learned_gvf": false,
+      "learned_options": false,
+      "purpose": "primitive baseline"
+    },
+    {
+      "id": "g1_o0",
+      "learned_gvf": true,
+      "learned_options": false,
+      "purpose": "prediction contribution without options"
+    },
+    {
+      "id": "g0_o1",
+      "learned_gvf": false,
+      "learned_options": true,
+      "purpose": "option contribution without learned GVF inputs"
+    },
+    {
+      "id": "g1_o1",
+      "learned_gvf": true,
+      "learned_options": true,
+      "purpose": "joint architecture"
+    }
+  ],
+  "additional_controls": [
+    "fixed or random prediction features matched in dimension and computation",
+    "fixed, random and learned option sets matched in count and duration where feasible",
+    "primitive fallback available and logged",
+    "oracle state or model only as privileged diagnostics",
+    "fixed modules versus jointly retuned complete methods reported separately"
+  ],
+  "change_schedules": [
+    {
+      "id": "stationary",
+      "purpose": "learning and resource aging"
+    },
+    {
+      "id": "dynamics_aba_c",
+      "phases": [
+        "A",
+        "B",
+        "A",
+        "C"
+      ],
+      "axis": "transition dynamics",
+      "phase_visible_to_agent": false
+    },
+    {
+      "id": "goal_aba_c",
+      "phases": [
+        "A",
+        "B",
+        "A",
+        "C"
+      ],
+      "axis": "task reward or goals",
+      "phase_visible_to_agent": false
+    },
+    {
+      "id": "perception_aba_c",
+      "phases": [
+        "A",
+        "B",
+        "A",
+        "C"
+      ],
+      "axis": "observation mapping",
+      "phase_visible_to_agent": false
+    }
+  ],
+  "module_events": [
+    "question_created",
+    "question_changed",
+    "prediction_emitted",
+    "target_available",
+    "option_created",
+    "option_started",
+    "option_terminated",
+    "option_interrupted",
+    "option_deleted",
+    "option_reused",
+    "abstraction_version_changed",
+    "planner_invoked"
+  ],
+  "record_fields": [
+    "lifetime_id",
+    "primitive_time",
+    "module_id",
+    "module_version",
+    "decision_time",
+    "information_available_time",
+    "reward_raw",
+    "cumulant",
+    "continuation",
+    "option_duration",
+    "failure_reason",
+    "model_steps",
+    "planning_nodes",
+    "wall_seconds",
+    "persistent_bytes",
+    "birth_or_death_reason"
+  ],
+  "diagnostics": [
+    "target-policy prediction accuracy by scale",
+    "calibration only for probability-valued questions",
+    "option attainment, duration and behavioral redundancy",
+    "abstraction aliasing and model-composition error",
+    "GVF x option interaction on predeclared reward scale",
+    "new-C acquisition and returned-A reuse",
+    "failure and resource growth including discarded modules"
+  ],
+  "study_separation": {
+    "development": "independent full lifetimes for choosing learning, discovery, retirement and planning rules",
+    "confirmation": "new full lifetimes and unopened schedules after whole-procedure freeze",
+    "prohibited": "selecting questions, skills or stopping times from confirmation futures; combining the best checkpoint of every module into a fictitious system"
+  },
+  "unresolved_before_execution": [
+    "concrete environment and adapter commit",
+    "specific cumulants, policies, timescales and option parameterization",
+    "all arm configs and equal-information controls",
+    "lifetime duration and complete independent seed population",
+    "interaction, computation, memory and wall-time ceilings",
+    "minimum relevant effect and statistical precision plan",
+    "failure scoring, recovery thresholds and competing-event treatment"
+  ],
+  "stage_gates": [
+    "contract complete",
+    "small-system computation verified",
+    "prediction/skill validity established",
+    "downstream utility tested",
+    "lifetime and resource claims assessed",
+    "independent confirmation"
+  ],
+  "sources": [
+    "https://josephmodayil.com/papers/horde-final.pdf",
+    "https://journals.sagepub.com/doi/abs/10.1177/1059712313511648",
+    "https://people.eecs.berkeley.edu/~russell/classes/cs294/f05/papers/sutton%2Bal-1999.pdf",
+    "https://ojs.aaai.org/index.php/AAAI/article/download/10916/10775",
+    "https://proceedings.mlr.press/v70/machado17a.html",
+    "https://proceedings.mlr.press/v48/abel16.html",
+    "https://proceedings.mlr.press/v108/abel20a.html",
+    "https://arxiv.org/abs/1206.6473"
+  ],
+  "artifact_type": "planning_design",
+  "execution_status": "not_executable",
+  "input_adapter_ready": false
+}

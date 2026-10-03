@@ -1,0 +1,6 @@
+{
+  "_template_note": "FORMAT EXAMPLE ONLY: replace with actual producer provenance and include the referenced materials.",
+  "source_revision": "REPLACE_WITH_UPSTREAM_COMMIT_AND_PATCH_ID",
+  "dependency_lock": "REPLACE_WITH_DEPENDENCY_LOCK_PATH_AND_SHA256",
+  "invocation": "REPLACE_WITH_ACTUAL_NON_SECRET_COMMAND"
+}

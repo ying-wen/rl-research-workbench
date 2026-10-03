@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "template_status": "proposed_structural_example_not_executable",
+  "scope": "Merge modules into a complete registered study protocol; this file alone is not a run protocol.",
+  "limitations": [
+    "Declared sources and lags require runtime auditing.",
+    "deployment includes future policy effects through online learning.",
+    "No planner, model, or memory module is implemented by this template."
+  ],
+  "modules": [
+    {
+      "id": "memory",
+      "role": "memory",
+      "deployment": true,
+      "inputs": [
+        {
+          "name": "observation",
+          "source": "external:observation",
+          "available_at": "decision_time",
+          "privilege": "agent"
+        },
+        {
+          "name": "previous_state",
+          "source": "memory.state",
+          "available_at": "previous_step",
+          "privilege": "agent"
+        }
+      ],
+      "outputs": [
+        "state"
+      ],
+      "persistent_state": [
+        "recurrent_state",
+        "parameter_state",
+        "normalization_state"
+      ],
+      "update_clock": "one recurrent arrival per real environment transition; gradient clock separately registered",
+      "objective": "Maintain history needed for the registered predictive/control target",
+      "measure": "History intervention response and complete-lifetime raw reward; decoding alone is insufficient",
+      "downstream_consumers": [
+        "memory",
+        "model",
+        "actor"
+      ],
+      "costs": [
+        "parameters",
+        "resident_state_bytes",
+        "arrival_FLOPs"
+      ],
+      "evidence_status": "proposed"
+    },
+    {
+      "id": "model",
+      "role": "world_model",
+      "deployment": true,
+      "inputs": [
+        {
+          "name": "state",
+          "source": "memory.state",
+          "available_at": "decision_time",
+          "privilege": "agent"
+        },
+        {
+          "name": "observed_transition",
+          "source": "external:observed_transition",
+          "available_at": "after_transition",
+          "privilege": "agent"
+        }
+      ],
+      "outputs": [
+        "rollout_model"
+      ],
+      "persistent_state": [
+        "model_parameters",
+        "optimizer_state",
+        "replay_if_declared"
+      ],
+      "update_clock": "after_transition for learning; decision_time for read-only simulation queries",
+      "objective": "Predict registered reward/continuation/value-relevant outcomes using legal observed data",
+      "measure": "Held-out multi-step value error, shift adaptation and downstream full-lifetime reward",
+      "downstream_consumers": [
+        "planner"
+      ],
+      "costs": [
+        "model_updates",
+        "replay_bytes",
+        "simulated_transitions",
+        "FLOPs"
+      ],
+      "evidence_status": "proposed"
+    },
+    {
+      "id": "planner",
+      "role": "planner",
+      "deployment": true,
+      "inputs": [
+        {
+          "name": "model_snapshot",
+          "source": "model.rollout_model",
+          "available_at": "previous_step",
+          "privilege": "agent"
+        }
+      ],
+      "outputs": [
+        "action_proposal"
+      ],
+      "persistent_state": [
+        "search_tree_if_retained"
+      ],
+      "update_clock": "bounded simulations before each real action; persistent model snapshot fixed during each search",
+      "objective": "Improve the declared expected external-return decision objective under the model",
+      "measure": "Matched-data and matched-compute return; decision latency; model exploitation error",
+      "downstream_consumers": [
+        "actor"
+      ],
+      "costs": [
+        "simulation_calls",
+        "search_nodes",
+        "decision_latency_ms",
+        "tree_bytes"
+      ],
+      "evidence_status": "proposed"
+    },
+    {
+      "id": "actor",
+      "role": "actor",
+      "deployment": true,
+      "inputs": [
+        {
+          "name": "state",
+          "source": "memory.state",
+          "available_at": "decision_time",
+          "privilege": "agent"
+        },
+        {
+          "name": "proposal",
+          "source": "planner.action_proposal",
+          "available_at": "decision_time",
+          "privilege": "agent"
+        }
+      ],
+      "outputs": [
+        "action"
+      ],
+      "persistent_state": [
+        "policy_parameters",
+        "option_state_if_used"
+      ],
+      "update_clock": "one deployed action per actual decision event; learner writes separately registered",
+      "objective": "Maximize registered full-lifetime raw external reward",
+      "measure": "Complete-lifetime score, failures, adaptation and resource use",
+      "downstream_consumers": [],
+      "costs": [
+        "policy_forward_FLOPs",
+        "actual_environment_actions"
+      ],
+      "evidence_status": "proposed"
+    },
+    {
+      "id": "oracle_diagnostic",
+      "role": "diagnostic",
+      "deployment": false,
+      "inputs": [
+        {
+          "name": "hidden_state",
+          "source": "external:hidden_environment_state",
+          "available_at": "decision_time",
+          "privilege": "diagnostic"
+        }
+      ],
+      "outputs": [
+        "diagnostic_bound"
+      ],
+      "persistent_state": [],
+      "update_clock": "separate offline diagnostic job",
+      "objective": "Check whether the task/model/planning opportunity exists",
+      "measure": "Diagnostic opportunity only; never counted as a deployable method",
+      "downstream_consumers": [],
+      "costs": [
+        "oracle_calls_separate_ledger"
+      ],
+      "evidence_status": "proposed"
+    }
+  ]
+}

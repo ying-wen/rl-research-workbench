@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "scope": "Architecture design catalog; zero executable module adapters.",
+  "executable_count": 0,
+  "kind": "modules",
+  "items": [
+    {
+      "id": "gvf",
+      "role": "gvf",
+      "name": "General value function / 多预测知识",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Cumulant, target policy, continuation and termination define the prediction question; behavior-policy support and off-policy correction are explicit.",
+      "measurement": "Causal prediction/calibration by horizon plus controlled downstream usefulness.",
+      "upstream_references": [
+        "https://aamas.csc.liv.ac.uk/Proceedings/aamas2011/papers/A6_R70.pdf"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "option",
+      "role": "option",
+      "name": "Temporal abstraction / option",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Initiation set, intra-option policy, termination, interruption and primitive-time credit are separate contracts.",
+      "measurement": "Actual option duration, reliability, primitive-step reward and equal-budget controls.",
+      "upstream_references": [
+        "https://doi.org/10.1016/S0004-3702(99)00052-1"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "subgoal",
+      "role": "subgoal",
+      "name": "Subgoal discovery and selection",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Goal representation, reachability, intrinsic target, hindsight relabeling and lower-policy nonstationarity are explicit.",
+      "measurement": "Achievability and external-return improvement beyond random/manual subgoal controls.",
+      "upstream_references": [
+        "https://papers.nips.cc/paper/7591-data-efficient-hierarchical-reinforcement-learning.pdf",
+        "https://doi.org/10.1016/S0004-3702(99)00052-1"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "representation",
+      "role": "representation",
+      "name": "Predictive or control representation",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "State abstraction declares which decisions/values it preserves and under which data distribution.",
+      "measurement": "Aliasing interventions, prediction/control error, transfer and resource-matched controls.",
+      "upstream_references": [
+        "https://proceedings.neurips.cc/paper/2020/file/3bb585ea00014b0e3ebe4c6dd165a358-Paper.pdf",
+        "https://aamas.csc.liv.ac.uk/Proceedings/aamas2011/papers/A6_R70.pdf"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "memory",
+      "role": "memory",
+      "name": "Persistent history state",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Reset, burn-in, history credit, checkpoint consistency and deployment persistence are declared.",
+      "measurement": "Same-observation/different-history tests and complete-lifetime utility.",
+      "upstream_references": [
+        "https://openreview.net/forum?id=r1lyTjAqYX",
+        "https://www.nature.com/articles/s41586-025-08744-2"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "world_model",
+      "role": "world_model",
+      "name": "Learned transition or value-relevant model",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Observed/imagination data are separate; model target, rollout policy and versioned snapshot are declared.",
+      "measurement": "One-step and multi-step errors, policy-ranking/value error, shift adaptation, downstream return.",
+      "upstream_references": [
+        "https://doi.org/10.1145/122344.122377",
+        "https://proceedings.neurips.cc/paper/2020/file/3bb585ea00014b0e3ebe4c6dd165a358-Paper.pdf",
+        "https://www.nature.com/articles/s41586-025-08744-2"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "planner",
+      "role": "planner",
+      "name": "Decision-time search or Dyna-style planning",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Separate planning-time action selection from background value learning; count simulation calls and model privilege.",
+      "measurement": "Matched-data/matched-compute improvement, latency, model exploitation and search-depth sensitivity.",
+      "upstream_references": [
+        "https://doi.org/10.1145/122344.122377",
+        "https://arxiv.org/abs/1911.08265",
+        "https://www.nature.com/articles/s41586-025-08744-2"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "learning_controller",
+      "role": "learning_controller",
+      "name": "Online control of learning updates",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Targets, controllable operators, delayed feedback, credit and actual deployment timing are explicit.",
+      "measurement": "Counterfactual microdiagnostics and independently confirmed raw-return improvement.",
+      "upstream_references": [
+        "https://www.ijcai.org/proceedings/2019/581"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "coordination",
+      "role": "coordination",
+      "name": "Multi-agent coordination",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Per-agent observations/actions/messages, centralized training privilege, partner identities and shared state are explicit.",
+      "measurement": "Independent joint-lifetime repeats, partner transfer, communication and centralized-information controls.",
+      "upstream_references": [
+        "https://proceedings.neurips.cc/paper/2017/hash/68a9750337a418a86fe06c1991a1d64c-Abstract.html"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    },
+    {
+      "id": "orchestrator",
+      "role": "orchestrator",
+      "name": "Architecture scheduler and persistent lifecycle",
+      "status": "reference_only",
+      "executable": false,
+      "contract_focus": "Owns atomic snapshot/restore, event order, resource budgets and boundaries; it is not itself an established algorithm.",
+      "measurement": "Deterministic event traces, failure injection, whole-architecture cost and downstream return.",
+      "upstream_references": [
+        "https://doi.org/10.1145/122344.122377",
+        "https://aamas.csc.liv.ac.uk/Proceedings/aamas2011/papers/A6_R70.pdf"
+      ],
+      "adapter_status": "not_implemented",
+      "evidence_boundary": "Reference algorithm evidence does not validate a new combination or this workbench module.",
+      "implementation_status": "reference_only"
+    }
+  ]
+}

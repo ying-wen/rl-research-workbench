@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rl-research-workbench"
+version = "0.1.0"
+description = "Evidence-aware reinforcement learning research protocols and small executable examples"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+dependencies = []
+
+[project.scripts]
+rlwb = "rlworkbench.cli:main"
+
+[tool.setuptools]
+packages = ["rlworkbench"]

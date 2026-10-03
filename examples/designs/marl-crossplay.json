@@ -1,0 +1,222 @@
+{
+  "artifact_type": "planning_design",
+  "design_kind": "marl_crossplay_and_teammate_churn",
+  "design_version": 1,
+  "status": "design_only_not_executable",
+  "execution_status": "not_executable",
+  "native_integration": false,
+  "input_adapter_ready": false,
+  "question": "Does a candidate persistent-memory architecture improve adaptation to unseen teammates beyond ordinary recurrent capacity, and does an added update controller provide a separate increment?",
+  "claim_boundary": "Proposed experiments only. No native MARL code, qualified adapter, registered run or efficacy result is supplied.",
+  "source_status": {
+    "algorithm_families": "public primary references",
+    "control_matrix": "workbench design proposal",
+    "candidate_architecture": "must be specified before implementation",
+    "empirical_results": "none"
+  },
+  "initial_task": {
+    "catalog_id": "pettingzoo",
+    "proposed_game": "butterfly/cooperative_pong-v6",
+    "source": "https://pettingzoo.farama.org/environments/butterfly/cooperative_pong/",
+    "api": "Parallel",
+    "roles": [
+      "paddle_0",
+      "paddle_1"
+    ],
+    "upstream_revision": "REQUIRED_BEFORE_EXECUTION",
+    "dependency_lock": "REQUIRED_BEFORE_EXECUTION",
+    "observation": "native full-screen image; no privileged phase or teammate ID",
+    "reward": "prespecified mean of the two identical native rewards per joint transition, not their duplicated sum",
+    "reason": "Two fixed roles permit explicit cross-play pairing and interface checks. Full-screen single-frame observations do not prove a need for a sophisticated memory; include two-frame and ordinary-GRU controls.",
+    "ctde_limit": "On this task the available global screen may offer little extra information over local actor observation; use it for pipeline checks, not proof of centralized-credit advantage.",
+    "next_task": "Only after qualification, select a task that directly tests the missing information/coordination mechanism; SMACv2 is a reference candidate requiring a separate design."
+  },
+  "information_contract": {
+    "execution_actor": [
+      "its native observation",
+      "fixed role identity if included for all methods",
+      "own declared recurrent state",
+      "its own past action and received reward if included for all methods"
+    ],
+    "training_critic": [
+      "declared joint/global state under CTDE",
+      "joint reward and action records"
+    ],
+    "diagnostics_only": [
+      "teammate snapshot source and training seed",
+      "external churn schedule and phase",
+      "full cross-play identity matrix"
+    ],
+    "communication": "No extra message channel in the initial task; adding one is a new factor with explicit bit/round/delay budgets."
+  },
+  "independent_units": {
+    "unit": "independently initialized complete trained team or jointly generated learning population",
+    "not_independent": [
+      "agents in one team",
+      "episodes from one trained policy pair",
+      "vector environments feeding one learner",
+      "cells sharing the same focal or teammate policy"
+    ],
+    "outer_seed_fields": [
+      "team_initialization_seed",
+      "environment_seed_stream",
+      "teammate_pool_generation_seed",
+      "teammate_sampling_seed"
+    ],
+    "crossplay_uncertainty": "Retain source-team identities and account for crossed row/column dependence. Basic rlworkbench compare does not implement this estimator."
+  },
+  "stages": [
+    {
+      "id": "interface",
+      "compare": [
+        "scripted sanity controls",
+        "author IPPO adaptation",
+        "author MAPPO adaptation"
+      ],
+      "tests": [
+        "joint versus per-agent reward counting",
+        "AEC/Parallel semantics if converted",
+        "active agent and terminal/truncation masks",
+        "isolated evaluation RNG and hidden state",
+        "parameter-sharing and role mapping"
+      ],
+      "advance_if": "All contracts checked and ordinary controls solve the chosen setting; otherwise revise the task or adapter."
+    },
+    {
+      "id": "memory",
+      "fixed_training_regime": "Select and freeze one qualified learning method using independent development evidence before the mechanism study.",
+      "factor_architecture": [
+        "ordinary_gru",
+        "specified_candidate_memory"
+      ],
+      "factor_teammate_schedule": [
+        "fixed_frozen_partner",
+        "unannounced_partner_switches_with_revisit"
+      ],
+      "additional_controls": [
+        "two_frame_actor",
+        "parameter_matched_active_gru",
+        "compute_matched_deeper_actor",
+        "declared_memory_reset_intervention"
+      ],
+      "do_not_change": [
+        "reward",
+        "actor information",
+        "critic privileges",
+        "environment version",
+        "joint transition horizon",
+        "partner pool generation budget"
+      ],
+      "advance_if": "Candidate improves the prespecified unseen-partner endpoint with old-partner noninferiority and measured resource limits."
+    },
+    {
+      "id": "meta_controller",
+      "depends_on": "A qualified memory experiment with a measurable failure mode.",
+      "factorial": [
+        "base_architecture + fixed_update_rule",
+        "base_architecture + meta_update_controller",
+        "candidate_architecture + fixed_update_rule",
+        "candidate_architecture + meta_update_controller"
+      ],
+      "interpretation": "Team credit, network-module credit and learning-program credit are separate estimands. Test the architecture-controller interaction rather than assigning all improvement to meta-learning."
+    }
+  ],
+  "proposed_budget_example": {
+    "status": "illustrative planning numbers, not registered or a power recommendation",
+    "joint_training_steps_per_team": 500000,
+    "development_team_seeds_per_cell": 6,
+    "confirmation_team_seeds": "choose after development variance and minimum-effect analysis; use an untouched population",
+    "vector_envs": 1,
+    "agent_count": 2,
+    "agent_actions_upper_bound_per_training_team": 1000000,
+    "partner_generation_cost": "Budget separately for every trained snapshot source and reuse it equally across candidate arms.",
+    "evaluation_cost": "Lock pool size, pair matrix, episodes per pair, episode caps and joint-step cap before training. Never choose checkpoints using the final cross-play pool.",
+    "churn_schedule": "In the continuing-adaptation panel only, propose switches at 25%, 50%, 75% of a lifetime, with the final interval revisiting the original partner. The schedule is researcher-only; the frozen zero-shot panel is separate."
+  },
+  "evaluation_panels": [
+    {
+      "name": "frozen_selfplay",
+      "learning": "none",
+      "population": "original independently trained teams"
+    },
+    {
+      "name": "frozen_crossplay",
+      "learning": "none",
+      "population": "all preregistered left-role policy i x right-role policy j combinations, with off-diagonal cells reported separately",
+      "role_rule": "Keep role identity; do not assume asymmetric paddles are exchangeable."
+    },
+    {
+      "name": "frozen_unseen_teammates",
+      "learning": "none",
+      "population": "untouched partner seeds/algorithms chosen before final evaluation"
+    },
+    {
+      "name": "continual_partner_changes",
+      "learning": "declared online updates permitted",
+      "population": "independent complete focal-agent/partner-pool lifetimes",
+      "state_rule": "Preserve focal state over unannounced switches. Any partner-state or environment reset must be explicit and matched across arms."
+    },
+    {
+      "name": "old_partner_revisit",
+      "learning": "frozen recall then separately budgeted relearning",
+      "population": "original partner identities from the prespecified lifetime schedule"
+    }
+  ],
+  "measures": {
+    "primary": "Set exactly one complete-lifetime team-return or fixed-pool cross-play estimand before registration; these answer different questions.",
+    "minimum_effect": "REQUIRED_BEFORE_EXECUTION",
+    "secondary": [
+      "full cross-play matrix with role labels",
+      "worst prespecified teammate group",
+      "selfplay-crossplay gap",
+      "post-switch cumulative loss and prespecified recovery rule",
+      "old-partner recall and relearning speed",
+      "independent team failure rate",
+      "parameters, persistent bytes, peak memory, actor latency, training compute",
+      "joint transitions, per-agent actions, partner training, planning queries and communication costs"
+    ],
+    "unsupported_claims": [
+      "Nash equilibrium from a win-rate table",
+      "general teammate compatibility from self-play",
+      "memory necessity from one pixel task",
+      "independent seeds from within-team agents"
+    ]
+  },
+  "stop_or_revise_if": [
+    "Privileged teammate identity or phase reaches an execution actor.",
+    "Candidate only beats a smaller or cheaper baseline.",
+    "Self-play improves while held-out cross-play deteriorates beyond the registered tolerance.",
+    "Only a post-hoc checkpoint or subset of partners produces a gain.",
+    "Extra partner training, planning or message cost exceeds the matched budget.",
+    "The task does not distinguish the intended mechanism; do not add complexity solely to chase score."
+  ],
+  "external_producer_mapping": {
+    "job_unit": "one independent team or learning-population lifetime",
+    "steps": "registered joint-world transition total across all vector environments",
+    "evaluation_steps": "registered joint evaluation transitions",
+    "required_extra_artifacts": [
+      "agent-event-log.jsonl",
+      "crossplay-matrix.csv",
+      "teammate-pool-manifest.json",
+      "clock-budget-summary.json",
+      "source-and-adapter-diff.txt"
+    ],
+    "receipt": "Follow docs/external-adapters.md; result/producer placeholders are not measurement evidence."
+  },
+  "before_executable_protocol": [
+    "Implement and test a version-pinned adapter.",
+    "Resolve all REQUIRED fields, exact controls, total development/confirmation budgets and power rationale.",
+    "Freeze partner generation, evaluation populations, metrics and failure handling.",
+    "Create a separate external protocol and lock; this planning JSON is intentionally not a protocol."
+  ],
+  "sources": [
+    "https://arxiv.org/abs/2011.09533",
+    "https://arxiv.org/abs/2103.01955",
+    "https://proceedings.mlr.press/v119/hu20a.html",
+    "https://pettingzoo.farama.org/api/aec/",
+    "https://pettingzoo.farama.org/api/parallel/",
+    "https://pettingzoo.farama.org/environments/butterfly/cooperative_pong/",
+    "https://arxiv.org/abs/2212.07489",
+    "https://proceedings.neurips.cc/paper_files/paper/2022/hash/249f73e01f0a2bb6c8d971b565f159a7-Abstract-Conference.html"
+  ]
+}

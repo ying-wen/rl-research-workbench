@@ -1,0 +1,4 @@
+# Optional adapter; tested pins, not an exhaustive platform lock.
+# Install into a separate environment; record all resolved dependencies per study.
+stable-baselines3==2.7.1
+gymnasium==1.1.1

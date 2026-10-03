@@ -1,0 +1,345 @@
+{
+  "schema_version": "1.0",
+  "kind": "environments",
+  "updated_on": "2026-10-03",
+  "scope": "Families and datasets are reference entries, not installed environments. Reference-only integrations are unimplemented and untested in this workbench.",
+  "items": [
+    {
+      "id": "stationary_bandit",
+      "name": "Stationary Bernoulli bandit",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin arm means, horizon and independent RNG streams.",
+        "Evaluate all online rewards; track optimal-action rate only if available as isolated diagnostics."
+      ],
+      "caveats": [
+        "A teaching environment with no general benchmark standing."
+      ]
+    },
+    {
+      "id": "switching_bandit",
+      "name": "Hidden-switch Bernoulli bandit",
+      "track": "continual",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin the exogenous switching schedule before execution.",
+        "Keep phase labels outside learner input; preserve action/reward history continuously.",
+        "Report lifetime mean reward and prespecified post-change windows."
+      ],
+      "caveats": [
+        "A controlled nonstationarity diagnostic, not a complete continual-RL benchmark."
+      ]
+    },
+    {
+      "id": "cliff_grid",
+      "name": "Local cliff grid",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin map, start/goal, cliff penalty and transition/reset semantics.",
+        "Separate training behavior from frozen greedy evaluation."
+      ],
+      "caveats": [
+        "Locally implemented teaching variant; do not claim byte-for-byte Gymnasium equivalence."
+      ]
+    },
+    {
+      "id": "CartPole-v1",
+      "name": "Gymnasium CartPole-v1",
+      "track": "deep",
+      "implementation_status": "optional_adapter",
+      "upstream_url": "https://gymnasium.farama.org/environments/classic_control/cart_pole/",
+      "citation_url": "https://gymnasium.farama.org/environments/classic_control/cart_pole/",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin Gymnasium version and wrappers.",
+        "Distinguish termination from time-limit truncation and log the final observation."
+      ],
+      "caveats": [
+        "Initial optional scope is SB3 PPO only; CartPole smoke success does not validate deep-RL research claims."
+      ]
+    },
+    {
+      "id": "finite_mdp",
+      "name": "Exact finite-MDP diagnostics",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Publish transition/reward tables and analytically derived expectations.",
+        "Keep oracle model information out of algorithms that are meant to learn from transitions."
+      ],
+      "caveats": [
+        "A task specification pattern, not a supplied simulator."
+      ]
+    },
+    {
+      "id": "random_walk",
+      "name": "Random walk prediction",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare start-state distribution, absorbing states and reward placement.",
+        "Compare estimated values to exact solutions under a fixed evaluation distribution."
+      ],
+      "caveats": [
+        "Prediction RMSE does not measure control return."
+      ]
+    },
+    {
+      "id": "baird_counterexample",
+      "name": "Baird-style off-policy divergence diagnostic",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin features, target/behavior policies and sampling weights.",
+        "Record parameter norm and prediction error as diagnostics."
+      ],
+      "caveats": [
+        "Failure or success on one counterexample is not a universal convergence result."
+      ]
+    },
+    {
+      "id": "gymnasium_control",
+      "name": "Gymnasium continuous/classic control family",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://gymnasium.farama.org/environments/",
+      "citation_url": "https://gymnasium.farama.org/",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Use exact environment IDs and package versions.",
+        "Declare wrappers, action scaling, time limits, reward transformations and physical perturbations."
+      ],
+      "caveats": [
+        "Names such as Ant or Pendulum alone do not specify a reproducible task."
+      ]
+    },
+    {
+      "id": "ale",
+      "name": "Arcade Learning Environment",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://ale.farama.org/",
+      "citation_url": "https://arxiv.org/abs/1709.06009",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin ALE/ROM hashes and license/access requirements.",
+        "Declare sticky actions, frame skip, life-loss treatment, frame stacking and frame/decision budget.",
+        "Report per-game distributions and prespecified aggregation."
+      ],
+      "caveats": [
+        "ROMs are not included; task preprocessing materially changes the protocol."
+      ]
+    },
+    {
+      "id": "minatar",
+      "name": "MinAtar",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/kenjyoung/MinAtar",
+      "citation_url": "https://arxiv.org/abs/1903.03176",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin game version, difficulty and action conventions.",
+        "State whether simplified observations and sticky actions are enabled."
+      ],
+      "caveats": [
+        "Simplified games provide a cheaper development setting, not direct ALE equivalence."
+      ]
+    },
+    {
+      "id": "procgen",
+      "name": "Procgen",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/openai/procgen",
+      "citation_url": "https://proceedings.mlr.press/v119/cobbe20a.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Lock train/test level distributions, level counts and difficulty.",
+        "Separate training-set reuse from unseen-level generalization."
+      ],
+      "caveats": [
+        "A larger number of episodes on seen levels is not evidence of new-level generalization."
+      ]
+    },
+    {
+      "id": "bsuite",
+      "name": "Behaviour Suite",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/google-deepmind/bsuite",
+      "citation_url": "https://arxiv.org/abs/1908.03568",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Preserve the exact bsuite_id settings and prescribed episode budget.",
+        "Use capability-specific plots alongside aggregate scores."
+      ],
+      "caveats": [
+        "The dm_env discount/last interface needs an explicit adapter; no adapter is supplied here."
+      ]
+    },
+    {
+      "id": "dm_control",
+      "name": "DeepMind Control Suite",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/google-deepmind/dm_control",
+      "citation_url": "https://arxiv.org/abs/1801.00690",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin domain/task, physics/control timestep, observation mode and wrappers.",
+        "Translate LAST and discount deliberately; count physics versus agent steps."
+      ],
+      "caveats": [
+        "dm_env and Gymnasium termination semantics cannot be equated by position alone."
+      ]
+    },
+    {
+      "id": "minari_datasets",
+      "name": "Minari offline datasets",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://minari.farama.org/",
+      "citation_url": "https://minari.farama.org/",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin dataset ID/version/hash, collection policy and preprocessing.",
+        "Keep environment reconstruction separate from dataset reuse."
+      ],
+      "caveats": [
+        "This is an offline-data registry/ecosystem, not one environment; no dataset is downloaded."
+      ]
+    },
+    {
+      "id": "forager",
+      "name": "Forager",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/andnp/forager",
+      "citation_url": "https://rlj.cs.umass.edu/2026/papers/Paper39.pdf",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin map size, observation aperture, objects, regeneration and changing reward rules.",
+        "Preserve continuing start/step semantics; an evaluation window is not an environmental reset.",
+        "Log the complete lifetime and memory cost."
+      ],
+      "caveats": [
+        "The native interface does not emit a termination flag; any episodic wrapper changes the protocol.",
+        "No Forager adapter or implementation qualification is included."
+      ]
+    },
+    {
+      "id": "agarcl",
+      "name": "AgarCL",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/AgarCL/AgarCL-Benchmark",
+      "citation_url": "https://arxiv.org/abs/2505.18347v3",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin environment/baseline revisions, opponent rules, action interfaces and observation mode.",
+        "Declare death/rebirth effects on every learner state.",
+        "Keep frozen evaluation separate from native online performance."
+      ],
+      "caveats": [
+        "Rebirth need not reset learned parameters or memory; benchmark settings must specify the distinction.",
+        "No AgarCL adapter or long-horizon experiment is included."
+      ]
+    },
+    {
+      "id": "continual_world",
+      "name": "Continual World",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/awarelab/continual_world",
+      "citation_url": "https://arxiv.org/abs/2105.10919",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin task sequence, order repetitions, training budgets and evaluation matrix.",
+        "Declare task IDs, boundary signals, heads, replay and reset rules."
+      ],
+      "caveats": [
+        "Task-sequential results do not automatically transfer to boundary-free continuing learning."
+      ]
+    },
+    {
+      "id": "coom",
+      "name": "COOM",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/TTomilin/COOM",
+      "citation_url": "https://papers.nips.cc/paper_files/paper/2023/hash/d61d9f4fe4357296cb658795fd7999f0-Abstract-Datasets_and_Benchmarks.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin scenarios, task order, observation/action preprocessing and scenario budgets.",
+        "Record all exposed task/boundary information and policy reset rules."
+      ],
+      "caveats": [
+        "Game/task-sequence evaluation and a single continuing lifetime answer different questions."
+      ]
+    },
+    {
+      "id": "pettingzoo",
+      "name": "PettingZoo environment/API ecosystem",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://pettingzoo.farama.org/",
+      "citation_url": "https://arxiv.org/abs/2009.14471",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Choose an exact game/version and AEC or Parallel interface; the family ID is not runnable.",
+        "Pin order semantics, agent identity, dynamic membership, reward accumulation and per-agent terminal/truncation.",
+        "Declare any conversion wrapper, communication information and train/evaluation clocks."
+      ],
+      "caveats": [
+        "No native MARL adapter is provided.",
+        "AEC and Parallel conversion requires specific update-cycle conditions; arbitrary conversion changes the game.",
+        "Moved environment families and modern API entry points require version-specific source checks."
+      ]
+    },
+    {
+      "id": "smacv2",
+      "name": "SMACv2",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/oxwhirl/smacv2",
+      "citation_url": "https://arxiv.org/abs/2212.07489",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin StarCraft II, maps, capability generator, team composition and observation/state configuration.",
+        "Declare centralized-state privileges, agent availability/death masks and reward scaling.",
+        "Separate training scenarios, test scenario distribution and independent team seeds."
+      ],
+      "caveats": [
+        "No environment installation, game assets or MARL integration are included.",
+        "Procedurally new same-distribution scenarios do not automatically constitute out-of-distribution evaluation."
+      ]
+    }
+  ]
+}

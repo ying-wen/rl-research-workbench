@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-03",
+  "scope": "workflow_and_measurement_only",
+  "efficacy_claims": false,
+  "profiles": [
+    {
+      "profile": "classic",
+      "counts": {
+        "completed": 4,
+        "failed": 0,
+        "missing": 0,
+        "invalid": 0
+      },
+      "actual_interactions": 13308,
+      "maximum_interactions": 14400,
+      "lock_sha256": "03d5ab9e2d4a98e7f114770409451e23099d90b2c49cfbfd38049b06460fc933",
+      "comparison_claim_status": "workflow_smoke_only"
+    },
+    {
+      "profile": "continual",
+      "counts": {
+        "completed": 8,
+        "failed": 0,
+        "missing": 0,
+        "invalid": 0
+      },
+      "actual_interactions": 12000,
+      "maximum_interactions": 12000,
+      "lock_sha256": "27f50936884d8fc9f2e60988e30e6c6a093c9feae43e2d28cdf4f67273914b91",
+      "comparison_claim_status": "workflow_smoke_only"
+    },
+    {
+      "profile": "deep",
+      "counts": {
+        "completed": 4,
+        "failed": 0,
+        "missing": 0,
+        "invalid": 0
+      },
+      "actual_interactions": 1534,
+      "maximum_interactions": 1824,
+      "lock_sha256": "580c2ed9a1bdc172bf24fa992ca733cfa91adf2613b96b7c7ce2de5805314eb4",
+      "comparison_claim_status": "workflow_smoke_only"
+    }
+  ],
+  "runtime": {
+    "python": "3.9.6",
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "packages": {
+      "numpy": "1.26.2",
+      "torch": "2.8.0",
+      "gymnasium": "1.1.1",
+      "stable-baselines3": "2.7.1"
+    }
+  },
+  "source_files": {
+    "rlworkbench/__init__.py": "0134f79ce22b5e26e868d3d09ed0af5dcb3f9038cbea58a3716e2c62e25e7d76",
+    "rlworkbench/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "rlworkbench/analysis.py": "5c385a70f766822ab82328a34a2b12a87dadf062f156f75bcbebc8f332bca7aa",
+    "rlworkbench/cli.py": "f288135cc7c5559b40578c89c27e3d2ab8c6d2161ef68f28ece1ab00c21de4fa",
+    "rlworkbench/continual_metrics.py": "fa16a6f95cc3c2c2fc293f9ac0adf9562453494ddb819b1e44b62012e3c70da3",
+    "rlworkbench/contracts.py": "5360e8e2c6a30064583966d987e8cbab8f3d4aa60259092eeebcc329842c6fe9",
+    "rlworkbench/core.py": "19ca69723a3e0ca1554d4a808600c268d4b344ed53f021bad8c9a414b6c2c1f3",
+    "rlworkbench/engines.py": "654943013b2b57af42f4776d1229f14740908835d262e0f482723834f3ebfb7c",
+    "tests/test_cli.py": "2334a04a8a4b58e783dbf05dd8c2d17f57ec3157dc1d4d671dec543c76d19be9",
+    "tests/test_continual_metrics.py": "2827670af6df375f8c6d672f020a55b7271d5dea2e7fe22ff4cdd7a92d20860e",
+    "tests/test_contracts.py": "0fe7e0c2e67d12271153ada02f75931d9dbf8d3be7bf9b85d5b888db6a7781cf",
+    "tests/test_engines.py": "64d67fcd96e928fef479b3b6c5ab55d61bc83dd19ca372de8dfd1967f1955075",
+    "tests/test_workflow.py": "b5f1b877ca3877b123df1ceef653e00cd5e0cfb1d23913aaf602ca0dd157e01b",
+    "pyproject.toml": "95b273f5d4e57835e582455426d52642ca7fe1ec027dc5b7dfd41ccad3d6e8e4"
+  },
+  "tests": {
+    "base": {
+      "total": 60,
+      "passed": 59,
+      "skipped_optional_deep": 1
+    },
+    "with_optional_deep": {
+      "total": 60,
+      "passed": 60
+    },
+    "repository_checks": "passed",
+    "skill_frontmatter_validation": "passed",
+    "independent_skill_forward_test": "passed"
+  },
+  "limits": [
+    "Local CPU workflow and measurement checks only, not research efficacy.",
+    "Original project adapters and long-horizon matrices remain proposed and unexecuted.",
+    "GVF/options/planning/MARL module contracts are structural, not executable integrations.",
+    "No printed PDF or standalone site validation in this repository delivery."
+  ]
+}

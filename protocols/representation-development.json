@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "study_id": "representation-crl-development-proposal-v1",
+  "track": "continual",
+  "purpose": "development",
+  "question": "Does inexpensive learned local encoding improve recurrent adaptation beyond the original network, active parameter matching and fixed random features?",
+  "hypothesis": "FTA must improve over active capacity controls and avoid stationary degradation before independent confirmation; this first stage does not establish sparse-locality causality, recurrent memory or biological-topology value.",
+  "primary_metric": "mean_reward",
+  "direction": "maximize",
+  "minimum_effect": 0.01,
+  "seeds": [
+    31001,
+    31003,
+    31009
+  ],
+  "holdout_seeds": [
+    71001,
+    71003,
+    71009,
+    71011,
+    71017
+  ],
+  "budget": {
+    "steps": 400148,
+    "eval_episodes": 0,
+    "max_eval_steps": 0,
+    "max_total_steps": 25209324
+  },
+  "selection": {
+    "mode": "preselected",
+    "uses": "development_only",
+    "rule": "Proposed author-default anchors and named mechanism controls. No HPO is performed by this protocol. Resolve exact versions/configurations and seed reservation in a new registered external protocol before execution. Any later method-specific HPO is a separate study with equal declared search resources; freeze selection before independent confirmation."
+  },
+  "failure_policy": {
+    "mode": "score_floor",
+    "score_floor": -100.0
+  },
+  "baseline_ids": [
+    "stream_ac_author",
+    "metatrace_vector_port",
+    "metatrace_mixed_port",
+    "intentional_ac_author"
+  ],
+  "arms": [
+    {
+      "id": "stream_ac_author",
+      "algorithm": "external_stream_ac_author",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "configuration": "author_default_anchor",
+        "network": "original_independent_actor_critic"
+      }
+    },
+    {
+      "id": "metatrace_vector_port",
+      "algorithm": "external_metatrace_equation_port",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "variant": "vector",
+        "configuration": "method_specific_default_pending_qualification",
+        "identity": "equation_port_not_author_code_reproduction"
+      }
+    },
+    {
+      "id": "metatrace_mixed_port",
+      "algorithm": "external_metatrace_equation_port",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "variant": "Mixed",
+        "configuration": "method_specific_default_pending_qualification",
+        "identity": "equation_port_not_author_code_reproduction"
+      }
+    },
+    {
+      "id": "intentional_ac_author",
+      "algorithm": "external_intentional_ac_author",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "configuration": "author_functional_eta_default",
+        "std_floor_repair": false,
+        "unsupported_interface_policy": "register_gap_not_silent_deletion"
+      }
+    },
+    {
+      "id": "stream_ac_fta",
+      "algorithm": "external_stream_ac_fta",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "base": "author_stream_ac",
+        "actor_critic": "separate",
+        "replace": "last_hidden_activation_after_LayerNorm",
+        "tiles": 8,
+        "range_parameter": 1.0,
+        "outputs_per_scalar": 9,
+        "implementation_identity": "2026_author_variant_requires_source_qualification"
+      }
+    },
+    {
+      "id": "stream_ac_parameter_matched_mlp",
+      "algorithm": "external_stream_ac_parameter_matched_mlp",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "base": "author_stream_ac",
+        "width_rule": "argmin absolute active trainable parameter difference to FTA, integer shared widths32..512, tie smaller",
+        "match_actor_and_critic_separately": true,
+        "pad_zero_columns": false
+      }
+    },
+    {
+      "id": "stream_ac_fixed_features",
+      "algorithm": "external_stream_ac_fixed_features",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "base": "author_stream_ac",
+        "features": "concat(x,0.5*tanh(B*x))",
+        "extra_dimensions": 216,
+        "B": "fixed_seeded_independent",
+        "no_learned_memory": true
+      }
+    }
+  ],
+  "envs": [
+    {
+      "id": "pendulum_static",
+      "environment": "external_gym_pendulum_v1",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "reward": "native_unscaled",
+        "observation": "native",
+        "time_limit": "native_200",
+        "change_signal_to_policy": false
+      }
+    },
+    {
+      "id": "pendulum_goal_abac",
+      "environment": "external_pendulum_goal_abac_v1",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "schedule_status": "new_diagnostic_proposal_not_existing_benchmark",
+        "phase_sequence": [
+          "A",
+          "B",
+          "A",
+          "C"
+        ],
+        "period_transitions": 100037,
+        "change_indices_zero_based": [
+          100037,
+          200074,
+          300111
+        ],
+        "switch_causes_reset": false,
+        "change_signal_to_policy": false,
+        "task_id_to_policy": false,
+        "time_limit": 200,
+        "reward": "-wrap(theta-goal)^2 - 0.1*angular_velocity^2 - 0.001*applied_action^2",
+        "outside_rng_separate_from_policy": true,
+        "target_angle_radians_by_phase": {
+          "A": -0.2617993877991494,
+          "B": 0.2617993877991494,
+          "C": 0.0
+        },
+        "reward_clock": "same_pretransition_state_and_clipped_applied_action_as_pinned_Pendulum_source",
+        "observation": "native_no_target_angle"
+      }
+    },
+    {
+      "id": "reacher_static",
+      "environment": "external_gym_reacher_v4",
+      "config": {
+        "source_revision": "UNREGISTERED",
+        "reward": "native_unscaled",
+        "observation": "native",
+        "time_limit": "native_version_pinned",
+        "change_signal_to_policy": false
+      }
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "https://jmlr.org/papers/v25/23-0183.html",
+      "https://arxiv.org/abs/2410.14606v3",
+      "https://www.ijcai.org/proceedings/2019/581",
+      "https://jair.org/index.php/jair/article/view/13673",
+      "https://rlj.cs.umass.edu/2026/papers/Paper41.pdf",
+      "https://arxiv.org/abs/2604.19033"
+    ]
+  },
+  "checks": {
+    "implementation": [
+      "Qualify original independent 128x128 Linear/affine-free-LayerNorm/LeakyReLU actor and critic before replacing the final activation.",
+      "For the selected FTA variant verify 8 tiles plus shifted ReLU tail gives9 outputs, then publish separate actor/critic parameter counts and residual mismatch.",
+      "Verify applied-action clipping, reward timing, physical target reachability and fixed-target learnability before hidden GoalSwitch runs."
+    ],
+    "mechanism": [
+      "Only encoding changes in stage A; no StreamRate, auxiliary prediction/reconstruction loss, structure growth or extra task information.",
+      "Stage B separately tests persistent memory U and current-step computation: memory K1 vs shared K4 vs compute-matched unshared depth4; one environmental arrival remains one update event.",
+      "Stage C separately tests dense/self-only/random/module sparse sharing with hard masks across forward, gradients, traces and optimizer slots; stage D adds real biological topology only against matched rewiring."
+    ],
+    "performance": [
+      "Compare FTA with original MLP, active parameter-matched MLP and fixed features while preserving full external Stream-AC/Metatrace/Intentional-AC panel.",
+      "Evaluate full-lifetime raw reward, recovery/recurrence, stationary noninferiority and resource cost; representation metrics cannot substitute for control reward.",
+      "Predeclare independent confirmation and changed schedule/memory demands; no biological-graph efficacy conclusion follows from this pilot."
+    ]
+  },
+  "input_adapter_ready": false,
+  "design_status": "proposed_unpublished_not_registered_not_executed",
+  "seed_status": "illustrative_unallocated_must_check_existing_namespaces",
+  "registration_requirements": [
+    "Pin and hash original external code and exact dependency closure; qualify any equation ports separately.",
+    "Replace every UNREGISTERED placeholder and method-default label with exact numeric configuration; revalidate and freeze a new protocol.",
+    "Verify task reward/action/clocks and bootstrap semantics, no boundary label reaches policy, and all baseline interfaces are supported.",
+    "Reserve exclusive job/seed namespace and independent output locations; never mutate or relaunch a frozen existing population.",
+    "Predeclare task-specific failure interpretation and minimum-effect margins; the scalar floor here is a provisional composite pilot outcome, not an imputed reward or cross-task calibrated score.",
+    "Do not aggregate unnormalized raw rewards across tasks; produce task-stratified statistics and registered within-task margins."
+  ],
+  "analysis_plan": {
+    "unit": "independent complete training lifetime",
+    "secondary": [
+      "event-aligned early adaptation raw rewards",
+      "prechange-anchored recovery on comparable reward scales",
+      "A-return early reward versus first A with no reset",
+      "per-seed failure type/time and resource cost"
+    ],
+    "recovery": {
+      "window": 1000,
+      "baseline_window": 5000,
+      "persistence": 5,
+      "tolerance": 0.05,
+      "scale_comparable_required": true,
+      "threshold_status": "provisional_absolute_reward_units_calibrate_before_registration"
+    },
+    "multiplicity": "Predeclare contrasts per task; adjustment family and practical margins require registration. Do not pool raw rewards across Pendulum/Reacher.",
+    "confirmation": "Independent lifetimes and held-out schedule families after full development/HPO selection; include altered dwell times, gradual drift, cue/memory variants where relevant, and longer horizons."
+  }
+}

@@ -1,0 +1,487 @@
+{
+  "schema_version": "1.0",
+  "kind": "algorithms",
+  "updated_on": "2026-10-03",
+  "scope": "Registry entries are not execution support. Reference-only integrations are unimplemented and untested in this workbench.",
+  "items": [
+    {
+      "id": "epsilon_greedy_sample_average",
+      "name": "ε-greedy + sample-average estimates",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare arm distribution, exploration schedule and tie breaking.",
+        "Count every interaction in lifetime mean reward; no frozen evaluation for the tutorial."
+      ],
+      "caveats": [
+        "A stationary bandit teaching baseline; this small implementation is not an author-code reproduction."
+      ]
+    },
+    {
+      "id": "epsilon_greedy_constant_alpha",
+      "name": "ε-greedy + constant step size",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Tune alpha on development lifetimes and preserve unseen test lifetimes.",
+        "Log phase only for analysis; never pass the hidden switch schedule to the learner."
+      ],
+      "caveats": [
+        "Tracking a switching bandit does not establish neural continual-RL efficacy."
+      ]
+    },
+    {
+      "id": "tabular_q_learning",
+      "name": "Tabular Q-learning",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Test the max-action target and terminal bootstrap mask by hand.",
+        "Report behavior return separately from frozen greedy evaluation."
+      ],
+      "caveats": [
+        "The builtin runs the local cliff_grid teaching environment only."
+      ]
+    },
+    {
+      "id": "tabular_sarsa",
+      "name": "Tabular Sarsa",
+      "track": "classic",
+      "implementation_status": "builtin_tutorial",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Use the action actually sampled for the next on-policy target.",
+        "Declare epsilon, tie breaking and time-limit bootstrap behavior."
+      ],
+      "caveats": [
+        "The builtin runs the local cliff_grid teaching environment only."
+      ]
+    },
+    {
+      "id": "dynamic_programming",
+      "name": "Policy/value iteration",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Record the complete transition model, reward convention, discount and convergence tolerance.",
+        "Compare tiny MDP solutions to hand-calculated values."
+      ],
+      "caveats": [
+        "A known-model oracle is an implementation diagnostic, not a sample-budget competitor."
+      ]
+    },
+    {
+      "id": "td_lambda",
+      "name": "TD(λ) and true-online TD(λ)",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "https://proceedings.mlr.press/v32/seijen14.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Record accumulating/replacing/Dutch trace semantics.",
+        "Test forward/backward equivalence under the matching algorithm and assumptions."
+      ],
+      "caveats": [
+        "Different trace variants are different methods; do not silently interchange them."
+      ]
+    },
+    {
+      "id": "linear_gtd",
+      "name": "Gradient TD / TDC",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "https://doi.org/10.1145/1553374.1553501",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Record behavior/target policies, importance ratios and auxiliary-variable update order.",
+        "Use a divergence counterexample plus a realizable prediction problem."
+      ],
+      "caveats": [
+        "Prediction convergence conditions do not establish nonlinear control stability."
+      ]
+    },
+    {
+      "id": "average_reward_ac",
+      "name": "Differential / average-reward actor-critic",
+      "track": "classic",
+      "implementation_status": "reference_only",
+      "upstream_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "citation_url": "http://incompleteideas.net/book/the-book-2nd.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "State the continuing objective, reference normalization and average-reward estimate.",
+        "Check reward-offset behavior and update clocks."
+      ],
+      "caveats": [
+        "Discounted return and average reward define different objectives."
+      ]
+    },
+    {
+      "id": "dqn",
+      "name": "DQN",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/google/dopamine",
+      "citation_url": "https://www.nature.com/articles/nature14236",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Record replay ratio, target synchronization, frame counting and action repeat.",
+        "Unit-test stop-gradient targets, selected-action indexing and terminal masks."
+      ],
+      "caveats": [
+        "A neural Q-network without matching replay and target rules is not a faithful DQN reproduction."
+      ]
+    },
+    {
+      "id": "rainbow",
+      "name": "Rainbow",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/google/dopamine",
+      "citation_url": "https://arxiv.org/abs/1710.02298",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare each component and its ablation.",
+        "Test categorical projection, n-step boundaries and prioritized-replay weights."
+      ],
+      "caveats": [
+        "A partial Rainbow variant must list omitted or changed components."
+      ]
+    },
+    {
+      "id": "sb3_ppo",
+      "name": "PPO via Stable-Baselines3",
+      "track": "deep",
+      "implementation_status": "optional_adapter",
+      "upstream_url": "https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html",
+      "citation_url": "https://arxiv.org/abs/1707.06347",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin SB3, PyTorch and Gymnasium versions.",
+        "Record rollout length, minibatch schedule, advantage normalization, clipping and actual consumed steps.",
+        "Use independent evaluation RNG and freeze normalization statistics during diagnostic evaluation."
+      ],
+      "caveats": [
+        "Only CartPole-v1 is part of the initial adapter scope; no general PPO benchmark claim.",
+        "SB3 may require full rollouts; the runner must reject or declare budget rounding instead of hiding extra steps."
+      ]
+    },
+    {
+      "id": "sac",
+      "name": "Soft Actor-Critic",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/rail-berkeley/softlearning",
+      "citation_url": "https://proceedings.mlr.press/v80/haarnoja18b.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Record entropy-temperature adaptation, target entropy and reward scaling.",
+        "Test tanh log-probability correction, action bounds and critic-target masking."
+      ],
+      "caveats": [
+        "Different SAC editions differ in value networks and temperature updates."
+      ]
+    },
+    {
+      "id": "td3",
+      "name": "Twin Delayed DDPG",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/sfujim/TD3",
+      "citation_url": "https://proceedings.mlr.press/v80/fujimoto18a.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Separate exploration noise from target smoothing noise.",
+        "Test twin minimum, delayed actor clock and target updates."
+      ],
+      "caveats": [
+        "Actor-update counts and environment-step budgets are distinct."
+      ]
+    },
+    {
+      "id": "dreamerv3",
+      "name": "DreamerV3",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/danijar/dreamerv3",
+      "citation_url": "https://arxiv.org/abs/2301.04104",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Account for real transitions, model updates and imagined transitions separately.",
+        "Record world-model training, sequence boundaries, latent resets and reward transformations."
+      ],
+      "caveats": [
+        "World-model predictive quality alone does not demonstrate control benefit."
+      ]
+    },
+    {
+      "id": "td_mpc2",
+      "name": "TD-MPC2",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/nicklashansen/tdmpc2",
+      "citation_url": "https://arxiv.org/abs/2310.16828",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Count action-selection planning compute and model learning separately.",
+        "Pin action horizon, optimization iterations, model ensemble and warm starts."
+      ],
+      "caveats": [
+        "Equal interaction budgets can hide unequal planning cost."
+      ]
+    },
+    {
+      "id": "cql",
+      "name": "Conservative Q-Learning",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/aviralkumar2907/CQL",
+      "citation_url": "https://arxiv.org/abs/2006.04779",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin dataset bytes/version, reward transformation and action support.",
+        "Separate offline development, policy selection and any online evaluation interaction."
+      ],
+      "caveats": [
+        "Online validation access changes the information and interaction budget."
+      ]
+    },
+    {
+      "id": "stream_ac",
+      "name": "Stream-AC / Stream-X family",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/mohmdelsayed/streaming-drl",
+      "citation_url": "https://arxiv.org/abs/2410.14606v3",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin paper version, author branch and exact commit.",
+        "Record true update direction, normalization order, eligibility traces and actual optimizer.",
+        "Compare lifetime raw reward and all persistent state costs."
+      ],
+      "caveats": [
+        "The 2024 and 2026 versions differ; never merge them under an unspecified Stream-AC label.",
+        "Author repository license must be reviewed before any reuse; no upstream code is bundled here."
+      ]
+    },
+    {
+      "id": "metatrace_ac",
+      "name": "Metatrace Actor-Critic",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://www.ijcai.org/proceedings/2019/581",
+      "citation_url": "https://www.ijcai.org/proceedings/2019/581",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Specify scalar, vector or mixed variant, trace/TD derivative, entropy and normalization.",
+        "Label equation-level ports separately from author-code reproduction."
+      ],
+      "caveats": [
+        "A generic adaptive learning rate is not a complete Metatrace baseline."
+      ]
+    },
+    {
+      "id": "intentional_ac",
+      "name": "Intentional Actor-Critic",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/sharifnassab/Intentional_RL",
+      "citation_url": "https://arxiv.org/abs/2604.19033",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Preserve the functional target, diagonal scaling, trace rules, initialization and preprocessing.",
+        "Tune functional eta in its own units rather than matching an SGD step-size number."
+      ],
+      "caveats": [
+        "Intentional-Q is a separate method and cannot be relabeled Intentional-AC.",
+        "Inspect the exact source license before copying or redistributing; this entry links only."
+      ]
+    },
+    {
+      "id": "greedy_ac",
+      "name": "Greedy Actor-Critic",
+      "track": "deep",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://arxiv.org/abs/1810.09103v4",
+      "citation_url": "https://arxiv.org/abs/1810.09103v4",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Specify proposal distribution, sampled candidate count, elite rule, critic and entropy convention.",
+        "Compare operator and step-size controller in a factorial mechanism panel."
+      ],
+      "caveats": [
+        "The full method uses replay/minibatches; a no-replay port is a new adaptation."
+      ]
+    },
+    {
+      "id": "stream_rtu",
+      "name": "StreamRTU",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://arxiv.org/abs/2605.24709v2",
+      "citation_url": "https://arxiv.org/abs/2605.24709v2",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin recurrence, sensitivity injection and any encoder-gradient approximation.",
+        "Count hidden state, sensitivity memory and per-step computation."
+      ],
+      "caveats": [
+        "A detach visible in code does not by itself prove all historical sensitivity was removed."
+      ]
+    },
+    {
+      "id": "cbp",
+      "name": "Continual Backpropagation intervention",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://www.nature.com/articles/s41586-024-07711-7",
+      "citation_url": "https://www.nature.com/articles/s41586-024-07711-7",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pair with a named base RL algorithm and declare replacement schedule and utility estimate.",
+        "Specify reset treatment for weights, optimizer, traces and recurrent state."
+      ],
+      "caveats": [
+        "This is a plasticity intervention, not a standalone control algorithm.",
+        "Relearning speed and retention of earlier functions require separate measurements."
+      ]
+    },
+    {
+      "id": "ewc",
+      "name": "EWC intervention",
+      "track": "continual",
+      "implementation_status": "reference_only",
+      "upstream_url": "https://arxiv.org/abs/1612.00796",
+      "citation_url": "https://arxiv.org/abs/1612.00796",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare context/boundary information, consolidation schedule, Fisher estimate and reference parameters.",
+        "Account for additional memory and any replay/context-specific heads."
+      ],
+      "caveats": [
+        "Task boundaries and task identities are privileges that must match the intended setting."
+      ]
+    },
+    {
+      "id": "mappo",
+      "name": "Multi-Agent PPO (MAPPO)",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/marlbenchmark/on-policy",
+      "citation_url": "https://arxiv.org/abs/2103.01955",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin centralized critic inputs and decentralized actor information separately.",
+        "Declare shared versus unshared policies, role IDs, active/death masks and recurrence.",
+        "Count joint transitions, per-agent actions, vector environments and total updates separately."
+      ],
+      "caveats": [
+        "No native MARL implementation or qualified integration is included.",
+        "A central critic does not authorize global-state input to the execution actor."
+      ]
+    },
+    {
+      "id": "ippo",
+      "name": "Independent PPO (IPPO)",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/marlbenchmark/on-policy",
+      "citation_url": "https://arxiv.org/abs/2011.09533",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare local value inputs and shared versus unshared parameters.",
+        "Preserve each agent reward/advantage convention and actor information permissions.",
+        "Report independent trained-team seeds, not agents within one team, as outer repetitions."
+      ],
+      "caveats": [
+        "Independent learning does not necessarily mean unshared parameters.",
+        "No native implementation; the linked MAPPO repository is a public implementation route, not a certified reproduction of the separate IPPO paper."
+      ]
+    },
+    {
+      "id": "qmix",
+      "name": "QMIX",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/oxwhirl/pymarl",
+      "citation_url": "https://proceedings.mlr.press/v80/rashid18a.html",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Pin joint reward, state-conditioned mixer and local utility networks.",
+        "Test monotonic mixing and valid-action masks with a small joint-action table.",
+        "Preserve agent identities, episode replay boundaries and target-network clocks."
+      ],
+      "caveats": [
+        "Monotonic factorization restricts joint value representation.",
+        "No native implementation or author-code reproduction is claimed."
+      ]
+    },
+    {
+      "id": "vdn",
+      "name": "Value-Decomposition Networks (VDN)",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/oxwhirl/pymarl",
+      "citation_url": "https://arxiv.org/abs/1706.05296",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Declare common team reward and additive utility decomposition.",
+        "Record policy sharing, role inputs and any communication.",
+        "Use independent trained teams and fixed cross-play population definitions."
+      ],
+      "caveats": [
+        "Agent-wise utilities are not uniquely identified causal contributions.",
+        "No native implementation; PyMARL is an implementation reference rather than this workbench verification."
+      ]
+    },
+    {
+      "id": "maddpg",
+      "name": "Multi-Agent DDPG (MADDPG)",
+      "track": "deep",
+      "tags": [
+        "multi_agent"
+      ],
+      "implementation_status": "reference_only",
+      "upstream_url": "https://github.com/openai/maddpg",
+      "citation_url": "https://arxiv.org/abs/1706.02275",
+      "version_pin_required": true,
+      "protocol_requirements": [
+        "Specify cooperative/competitive/general-sum rewards and critic joint inputs.",
+        "Pin replay joint-transition alignment, actor updates, target networks and action adaptation.",
+        "Declare opponent policy pool, snapshot sampling and opponent-training cost."
+      ],
+      "caveats": [
+        "Historical source/API compatibility needs an explicitly qualified adapter.",
+        "Neither a win rate against one opponent nor centralized training proves equilibrium convergence."
+      ]
+    }
+  ]
+}

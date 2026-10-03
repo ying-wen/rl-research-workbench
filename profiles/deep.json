@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "study_id": "ppo-cartpole-smoke-v1",
+  "track": "deep",
+  "purpose": "smoke",
+  "question": "Can the optional PPO adapter produce exact budget accounting and independent frozen evaluation?",
+  "hypothesis": "Two preselected PPO configurations exercise the same measurement contract; no efficacy hypothesis is confirmed by this smoke budget.",
+  "primary_metric": "evaluation_return",
+  "direction": "maximize",
+  "minimum_effect": 5.0,
+  "seeds": [
+    11,
+    23
+  ],
+  "holdout_seeds": [
+    101,
+    211
+  ],
+  "selection": {
+    "mode": "preselected",
+    "rule": "Fixed configurations specified before running; smoke outcomes cannot select a winner or justify efficacy.",
+    "uses": "development_only"
+  },
+  "failure_policy": {
+    "mode": "score_floor",
+    "score_floor": 0.0
+  },
+  "baseline_ids": [
+    "ppo_default_lr"
+  ],
+  "arms": [
+    {
+      "id": "ppo_default_lr",
+      "algorithm": "sb3_ppo",
+      "config": {
+        "learning_rate": 0.0003,
+        "n_steps": 64,
+        "batch_size": 32,
+        "n_epochs": 2,
+        "policy_width": 32
+      }
+    },
+    {
+      "id": "ppo_lower_lr",
+      "algorithm": "sb3_ppo",
+      "config": {
+        "learning_rate": 0.0001,
+        "n_steps": 64,
+        "batch_size": 32,
+        "n_epochs": 2,
+        "policy_width": 32
+      }
+    }
+  ],
+  "envs": [
+    {
+      "id": "cartpole_cap100",
+      "environment": "CartPole-v1",
+      "config": {
+        "max_episode_steps": 100
+      }
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html",
+      "https://gymnasium.farama.org/environments/classic_control/cart_pole/",
+      "https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/"
+    ]
+  },
+  "checks": {
+    "implementation": [
+      "The declared training budget must be divisible by a rollout; batch size divides rollout size.",
+      "Raw rewards are logged before SB3 timeout bootstrap adjustments.",
+      "Evaluation uses a fresh environment and fixed independent seeds; parameters and buffers remain unchanged."
+    ],
+    "mechanism": [
+      "No mechanism or causal effect is established by the two fixed configurations."
+    ],
+    "performance": [
+      "Smoke only. Do not infer a tuned PPO result, a learning-rate advantage, or benchmark competitiveness.",
+      "CartPole cap is explicitly 100, different from the standard 500-step limit."
+    ]
+  },
+  "budget": {
+    "steps": 256,
+    "eval_episodes": 2,
+    "max_eval_steps": 200,
+    "max_total_steps": 1824
+  }
+}

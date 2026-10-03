@@ -1,0 +1,14 @@
+{
+  "_template_note": "FORMAT EXAMPLE ONLY: replace every identity, count and metric with the actual locked job and measured result. This file is not evidence.",
+  "job_id": "REPLACE_FROM_LOCK",
+  "lock_sha256": "REPLACE_WITH_FULL_LOCK_SHA256",
+  "status": "completed",
+  "metrics": {
+    "mean_reward": 0.0
+  },
+  "steps": 1000,
+  "evaluation_steps": 0,
+  "diagnostics": {
+    "evaluation_episodes": 0
+  }
+}
