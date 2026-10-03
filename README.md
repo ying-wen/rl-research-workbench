@@ -2,7 +2,9 @@
 
 **供人类研究者与 AI agent 共用的强化学习实践手册和迭代工具。** 从问题、推导和可否证预测出发，把实现检查、机制诊断、完整性能实验与下一轮决策连起来。覆盖经典 RL、深度 RL 和持续 RL。
 
-先读 [十分钟开始](docs/start-here.md)。持续强化学习项目直接进入 [持续实验原则](docs/continual.md) 和 [两个项目的生命期实验方案](docs/continual-project-playbooks.md)。它们分别处理 **StreamRate 的学习控制与元信用**、**网络表征与记忆结构**。
+第一次使用，按 [可运行的完整例子](docs/worked-example.md) 完成一次计划、运行、审计和比较。再读 [十分钟开始](docs/start-here.md)，选择自己的研究问题。持续强化学习项目可继续读 [持续实验原则](docs/continual.md)；[两个生命期实验方案](docs/continual-project-playbooks.md) 是学习控制与表征记忆的设计案例。
+
+需要先学习算法时，使用 [Continual RL Tutorial](https://github.com/ying-wen/continual-rl-tutorial) 和 [在线教材](https://yingwen.io/zh/continual-rl/)。教程解释算法并提供教学实现；Workbench 固定研究协议、检查运行证据并记录下一轮决定。两者不是两个重复的算法库。当前能力、缺口与建设顺序见 [实用化路线](docs/practical-roadmap.md)。
 
 整体思路从 [机制设计与推导桥](docs/mechanism-design.md) 开始。原调研手册的 **37 章全文** 已转成 [GitHub 可直接阅读的版本](docs/handbook.md)，逐章连接 [实践文档、代码、测试和命令](docs/handbook-code-map.md)；修改实现前可从 [反向索引](docs/handbook-code-index.md) 查回原理。下载仓库后打开 [交互阅读版](docs/handbook/index.html)，可筛选正文并展开每章的工具对应和未实现边界。
 

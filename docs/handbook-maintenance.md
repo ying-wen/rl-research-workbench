@@ -12,7 +12,7 @@
 | 核对手册与实现是否漂移 | [映射源](traceability/) | `python3 scripts/handbook.py check` |
 | 生成新的阅读入口 | 按下述步骤修改维护源 | `python3 scripts/handbook.py build` |
 
-GitHub 直接显示 Markdown；HTML 在本地浏览器阅读。`docs/handbook/index.html` 保留全文筛选、检查清单和六种模板导出，每章末尾增加可展开的工具对应。HTML 中的实现链接指向私有 GitHub 仓库，访问者需要仓库权限。下载仓库后也可用全文 Markdown 的相对链接离线查阅；函数行号在线链接由生成器重新计算。
+GitHub 直接显示 Markdown；HTML 在本地浏览器阅读。`docs/handbook/index.html` 保留全文筛选、检查清单和六种模板导出，每章末尾增加可展开的工具对应。HTML 中的实现链接指向公开的 GitHub 仓库。下载仓库后也可用全文 Markdown 的相对链接离线查阅；函数行号在线链接由生成器重新计算。
 
 ```bash
 # 仓库根目录；无需安装额外依赖
