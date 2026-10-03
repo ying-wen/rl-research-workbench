@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "purpose": "recommended_event_log_fields_not_a_fixed_software_API",
+  "identity": [
+    "study_id",
+    "run_id",
+    "parent_run_id",
+    "task_id",
+    "phase_id",
+    "event_id"
+  ],
+  "time": [
+    "env_transition",
+    "agent_decision",
+    "raw_frame",
+    "gradient_step",
+    "wall_seconds",
+    "learning_age"
+  ],
+  "transition": [
+    "reward_raw",
+    "reward_training",
+    "terminated",
+    "truncated",
+    "autoreset_mode",
+    "natural_rebirth",
+    "success",
+    "constraint_event"
+  ],
+  "learning": [
+    "value_mean",
+    "target_mean",
+    "td_error",
+    "grad_norm",
+    "update_norm",
+    "policy_entropy",
+    "policy_kl",
+    "replay_age"
+  ],
+  "resources": [
+    "learner_bytes",
+    "environment_bytes",
+    "decision_latency_ms",
+    "update_latency_ms",
+    "planning_steps"
+  ],
+  "evaluation": [
+    "mode_online_or_frozen",
+    "checkpoint_id",
+    "eval_episode_id",
+    "frozen_components"
+  ],
+  "status": [
+    "run_status",
+    "failure_category",
+    "failure_description",
+    "rerun_of"
+  ],
+  "notes": [
+    "Choose fields appropriate to the algorithm; not every diagnostic is mandatory.",
+    "Do not expose task_id or future phase metadata to the agent unless allowed by protocol.",
+    "Logs used for monitoring must not become undeclared feedback to the learner or human tuning."
+  ]
+}

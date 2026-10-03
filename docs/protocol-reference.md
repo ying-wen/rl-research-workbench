@@ -56,7 +56,7 @@ job回执状态为completed或failed；尚无回执为missing，格式或哈希�
 
 ## 持续指标
 
-`continual-metrics` 接受一条标准`events.jsonl`，只读取`type=transition, stream=training`，要求env_step从1连续。`--changes`表示第一条新阶段奖励的从零索引；例如200意味着第201条转移起变化。`--baseline-window`默认等于window；`--persistence`默认1；`--tolerance`为绝对奖励容差；`--direction`默认maximize。
+`continual-metrics` 接受一条标准`events.jsonl`，读取`type=transition, stream=train`（原生格式），也兼容外部生产者的`stream=training`；评价流不计入在线收益。要求env_step从1连续。`--changes`表示第一条新阶段奖励的从零索引；例如200意味着第201条转移起变化。`--baseline-window`默认等于window；`--persistence`默认1；`--tolerance`为绝对奖励容差；`--direction`默认maximize。
 
 `--end-reason completed|censored|crash` 必须来自真实终态；提前结束不得写completed。`--different-reward-scale`禁用基于前一阶段数值阈值的恢复主张。输出完整或前缀生命期统计、阶段原始奖励及恢复状态；崩溃和普通右删失分开。不同生命期的聚合、生存分析和回访因果判别另行设计。
 

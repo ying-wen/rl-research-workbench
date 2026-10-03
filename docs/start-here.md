@@ -2,7 +2,7 @@
 
 这份实践手册用于人类研究者和研究 agent 协作改进强化学习算法。每轮产物是一个能被证据支持、修订或否定的判断。运行器帮助固定协议、执行有限矩阵、保留结果；科学判断由研究负责人和审查者完成。
 
-首次使用先走下方闭环，再阅读与你的问题对应的专题。文献背景在[完整调研手册](research-handbook.html)，来源版本与核验边界在 [sources.json](sources.json)。本手册是对文献经验的操作化综合，不是已被某篇论文证明的通用最优流程。
+首次使用先走下方闭环，再阅读与你的问题对应的专题。[整体机制设计](mechanism-design.md) 连接目标、合法信息、更新、信用与生命期证据。文献背景在 [37 章全文](handbook.md)，通过 [逐章映射](handbook-code-map.md) 找代码与工具，来源版本与核验边界在 [sources.json](sources.json)。本手册是对文献经验的操作化综合，不是已被某篇论文证明的通用最优流程。
 
 研究预测知识、状态抽象、子目标、options 或层级规划时，使用 [GVF、抽象与 options 实践](prediction-abstraction-options.md)和[模块卡](../templates/module-card.md)，先验证各模块合同，再检验它们对整体控制的增量作用。
 

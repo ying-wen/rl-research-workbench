@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "source_snapshot": "docs/research-handbook.html",
+  "source_sha256": "1bda47d33d75960c234d521ae4ff2f1dde8d53577ef9a38b0997c655c33b655f",
+  "source_date": "2026-10-03",
+  "chapter_count": 37,
+  "source_record_count": 81,
+  "template_count": 6,
+  "extension_count": 7,
+  "content_policy": "original HTML preserved byte-for-byte; complete section text converted; code maps are maintained separately",
+  "mapping_files": [
+    "docs/traceability/chapters-core.json",
+    "docs/traceability/chapters-continual.json",
+    "docs/traceability/extensions.json"
+  ]
+}

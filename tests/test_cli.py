@@ -53,6 +53,27 @@ class CLITests(unittest.TestCase):
             self.assertEqual(self.call("validate", path)[0], 2)
             self.assertEqual(self.call("validate", path, "--external")[0], 0)
 
+    def test_continual_metrics_reads_native_training_stream(self):
+        from rlworkbench.core import plan
+        from rlworkbench.engines import execute
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            protocol = load(ROOT / "profiles/continual.json")
+            protocol["budget"]["steps"] = 60
+            job = next(j for j in plan(protocol) if j["env"]["environment"] == "switching_bandit")
+            job["env"]["config"]["switch_interval"] = 20
+            result = execute(job, directory)
+            events = directory / "events.jsonl"
+            # Evaluation rewards must not contaminate the online lifetime.
+            with events.open("a") as f:
+                f.write(json.dumps({"type": "transition", "stream": "evaluation", "env_step": 1, "reward": 1000000}) + "\n")
+            code, output, error = self.call("continual-metrics", events, "--changes", "20,40", "--window", 5, "--planned-steps", 60)
+            self.assertEqual(code, 0, error)
+            report = json.loads(output)
+            self.assertEqual(report["lifetime"]["observed_steps"], 60)
+            self.assertAlmostEqual(report["lifetime"]["mean_reward"], result["metrics"]["mean_reward"])
+            self.assertEqual(len(report["recoveries"]), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

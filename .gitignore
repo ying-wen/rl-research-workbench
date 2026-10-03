@@ -12,3 +12,5 @@ artifacts/
 .pytest_cache/
 .coverage
 *.log
+.playwright-cli/
+output/playwright/

@@ -1,0 +1,1191 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "guide-scope",
+      "kind": "chapter",
+      "title": "01 · 如何使用这份手册",
+      "question": "人类研究者和 agent 应如何按当前问题选择证据层级，而不把执行成功当作科学成功？",
+      "principle": "先分别登记问题定义、实现一致性、机制解释、效能与持续未来价值，再选择需要通过的门。手册中的文献发现、工程经验和综合建议保留不同身份；工作流通过只证明对应记录和执行路径成立。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/start-here.md",
+        "docs/iteration.md",
+        "docs/testing.md",
+        "AGENTS.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "audit",
+          "purpose": "按锁定人口核对完成、失败、缺失、无效与 claim_status；不评审机制或科学效能。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_run_and_receipts_reconcile",
+          "purpose": "验证运行人口与原始奖励对账，并验证 smoke 报告保留 workflow_smoke_only。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "audit",
+            "{RUN_DIR}"
+          ],
+          "purpose": "检查已完成实验的记录完整性，不据此宣告方法有效。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 为现存原生运行或已导入的结果目录，含 lock.json 与 jobs/。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/iteration-log.md"
+      ],
+      "gaps": [
+        "研究问题的重要性、机制成立和长期效能仍须人工或独立实验评审；audit 不认证科学结论。"
+      ]
+    },
+    {
+      "id": "guide-lineage",
+      "kind": "chapter",
+      "title": "02 · 研究脉络：不同群体分别解决了什么问题",
+      "question": "如何将不同研究群体的经验转化为实验设计，同时保留来源、版本和适用边界？",
+      "principle": "从被解决的问题组织文献：经典目标与算子、实验分布和调参、实现混杂、跨任务统计、能力基准以及持续生命期。每条经验都连接到可检查行动；不能把某篇论文中的配置或讲义建议变成跨任务普遍定律。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/algorithm-design.md",
+        "docs/statistics.md",
+        "docs/catalog.md",
+        "docs/project-patterns.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "docs/sources.json",
+        "catalog/algorithms.json",
+        "catalog/environments.json"
+      ],
+      "gaps": [
+        "当前没有自动文献真实性、版本差异或证据强度判定器；sources.json 是带时点的人工核验记录。",
+        "目录包含 reference_only 条目，列入来源或目录不代表已实现算法或环境。"
+      ]
+    },
+    {
+      "id": "guide-objective",
+      "kind": "chapter",
+      "title": "03 · 先确定研究对象与目标函数",
+      "question": "本次实验评价的是最终策略、完整学习生命期、预测误差还是给定开发预算下的可用算法？",
+      "principle": "先写清问题分布、指标单位、时间权重、信息权限、选择器和预算。在线累计收益必须包含探索与恢复损失；末端策略评价是另一目标。原始任务效用与训练塑形奖励分开，资源公平性对应明确的交互或计算约束。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/protocol-reference.md",
+        "docs/algorithm-design.md",
+        "docs/continual.md",
+        "docs/planning-and-architecture.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "检查主指标、改善方向、最小效应、预算与分层 checks 的声明，并验证原生指标兼容性。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "plan",
+          "purpose": "展开方法×环境×种子的完整人口，使预定交互预算可核对。"
+        },
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "检查声明的信息权限和模块连接；不验证运行时真实信息流。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_overlap_and_budget_overrun_rejected",
+          "purpose": "验证开发与保留种子重叠、计划超预算被拒绝。"
+        },
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_diagnostic_taint_cannot_be_laundered_by_middle_module",
+          "purpose": "检查诊断特权经中间模块流向决策的声明路径会被拒绝。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/continual.json"
+          ],
+          "purpose": "检查生命期 smoke 协议字段与当前原生适配能力。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "profiles/continual.json",
+            "--summary"
+          ],
+          "purpose": "显示方法、环境、种子人口与最大交互量。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/project-charter.md",
+        "templates/module-contract.json",
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "自然语言目标与指标是否一致须审阅，字段合法不代表估计对象合理。",
+        "原生执行仅支持 mean_reward/evaluation_return；预测误差、稳态极限、通用塑形不变性和墙钟预算约束未原生实现。"
+      ]
+    },
+    {
+      "id": "guide-design",
+      "kind": "chapter",
+      "title": "04 · 算法设计：从失效机制到可反驳的改进",
+      "question": "如何把一次算法修改变成能够排除替代解释、可以被否定的机制实验？",
+      "principle": "将具体失效事件分解为竞争解释，推导修改的算子、估计器或状态，并预测中间作用与最终行为。先固定数据检查计算，再回到闭环；使用最小正反例、廉价对手和适当二因子对照，避免用单一回报增益替代机制证据。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/algorithm-design.md",
+        "docs/testing.md",
+        "docs/iteration.md",
+        "docs/project-patterns.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "要求 implementation、mechanism、performance 三类非空检查声明；只检查存在，不执行其自然语言判据。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "根据带证据引用的明确决策创建后继草案；不决定候选是否有效。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_next_never_runs_and_confirmation_uses_reserved_seeds",
+          "purpose": "验证 next 不执行训练，拒绝 smoke 直接确认，确认使用保留种子并锁定选择。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/classic.json"
+          ],
+          "purpose": "检查一个示例是否分别登记实现、机制和性能目标。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/module-card.md",
+        "templates/decision-record.md",
+        "templates/decision.json"
+      ],
+      "gaps": [
+        "自动因果归因、二因子交互统计和最小反例生成未实现。",
+        "代码审计、方程恒等与梯度一致不自动成为回报提升证据；研究卡需记录最强替代解释和撤回条件。"
+      ]
+    },
+    {
+      "id": "stats-framework",
+      "kind": "chapter",
+      "title": "05 · 统计、调参与算力：明确一次实验究竟估计什么",
+      "question": "一次报告估计固定配置、完整调参流程、固定任务清单还是新任务总体的性能？",
+      "principle": "统计单位和不确定性层级由主张决定。固定配置的新训练种子只回答配置性能；完整选择过程的质量需要外层重复搜索，新任务泛化还需任务层抽样。先登记指标、预算和最小实际效应，再决定分析，不由已有曲线倒推问题。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/protocol-reference.md",
+        "docs/iteration.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "要求主指标、方向、minimum_effect、预选方法与选择规则；不推断任务总体。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "分别在固定环境内计算已登记候选相对基线的配对差值，并输出明确局限。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_paired_statistics_constant_difference_and_direction",
+          "purpose": "检验配对均值差的方向与常数差值区间，不检验总体代表性或区间的普遍覆盖率。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "compare",
+            "{RUN_DIR}",
+            "--candidate",
+            "sarsa",
+            "--baseline",
+            "q_learning"
+          ],
+          "purpose": "在 classic 结构的完整结果人口中查看逐环境配对描述。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是包含 sarsa 候选和 q_learning 登记基线的完整有效结果目录。",
+            "配对设计须事先成立；该命令不进行任务总体或选择过程推断。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/classic.json",
+        "templates/research-card.md"
+      ],
+      "gaps": [
+        "不支持完整 HPO 过程的外层重复分析、随机任务总体推断或任务层方差分解。",
+        "最低两个 seed 是 schema 约束，不是统计充分性保证。"
+      ]
+    },
+    {
+      "id": "stats-randomness",
+      "kind": "chapter",
+      "title": "06 · 随机单位、配对与重复：一个种子到底代表什么",
+      "question": "如何区分完整训练随机性、评估回合噪声和连续生命期窗口，建立有意义的配对？",
+      "principle": "一次完整训练或生命期通常是独立单位；评估回合和时间窗口是内部观测。配对应共享事先定义的外生情景，并分离环境、动作和评价 RNG；相同整数种子不保证动作相关轨迹相同，也不保证方差降低。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/testing.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_seed",
+          "purpose": "为教学引擎生成按命名空间派生的随机种子。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditStream.step",
+          "purpose": "按每步所有动作的潜在噪声生成奖励，避免动作选择改变外生噪声抽取顺序。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "以固定环境内配对 seed 为重采样单位；不把 episode 或 checkpoint 当独立样本。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_potential_reward_noise_is_not_action_conditioned_rng",
+          "purpose": "验证动作改变不改变下一步潜在奖励噪声的对齐。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_identical_seed_reproduces_all_events",
+          "purpose": "验证教学 bandit 在同配置和种子下复现全部事件。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_eval_budget_does_not_change_training",
+          "purpose": "验证表格示例的评价预算改变不影响训练事件和最终 Q。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "profiles/continual.json",
+            "--summary"
+          ],
+          "purpose": "确认种子位于完整方法×环境人口层；不把阶段当新 seed。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "通用随机流注册表、硬件逐位确定性、共享预训练的层级重采样和跨集群 RNG 恢复未实现。",
+        "仅按相同 seed 标签做配对不能证明外生场景有效耦合，适配器接入时需额外审计。"
+      ]
+    },
+    {
+      "id": "stats-hpo",
+      "kind": "chapter",
+      "title": "07 · 超参数测试：把选择、评估与搜索成本分开",
+      "question": "如何分开开发、选择和独立确认，并公平计入搜索成本？",
+      "principle": "冻结搜索空间、采样分布、早停、checkpoint 规则与失败处理后选择配置，再在新样本上确认。算法峰值能力与给定预算下整个选择流程的质量不同；二者需要不同外层重复。对各方法记录全部候选和失败成本，不只报告胜者。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/iteration.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "当前只允许 preselected arms，并检查开发与保留种子分离以及确认选择摘要。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "freeze",
+          "purpose": "把配置、计划和工作台源码摘要绑定到不可原地覆盖的锁文件。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "从开发决策选定方法并改用保留种子形成确认草案；不搜索超参。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_freeze_binds_config_jobs_and_source",
+          "purpose": "验证协议、执行人口或源码漂移会使锁验证失败。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_next_never_runs_and_confirmation_uses_reserved_seeds",
+          "purpose": "验证确认种子来自保留人口、所选配置修改会失效，smoke 不能直接升级。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "freeze",
+            "{PROTOCOL}",
+            "--out",
+            "{NEW_LOCK}"
+          ],
+          "purpose": "在人工完成选择并审阅协议后生成新锁。",
+          "mode": "creates_files",
+          "requires": [
+            "{PROTOCOL} 是已完成调参选择并通过校验的原生协议。",
+            "{NEW_LOCK} 必须不存在；正式确认还须来自 next 的合法选择来源。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "next",
+            "{LOCK}",
+            "--decision",
+            "{DECISION}",
+            "--study-id",
+            "confirmation-v2",
+            "--out",
+            "{NEW_PROTOCOL}"
+          ],
+          "purpose": "从开发研究与明确 confirm 决策创建待审阅确认草案。",
+          "mode": "creates_files",
+          "requires": [
+            "{LOCK} 是 development 研究的有效锁，不能是 smoke。",
+            "{DECISION} 包含 parent_study_id、action=confirm、rationale、evidence、selected_arms。",
+            "{NEW_PROTOCOL} 必须不存在；新任务泛化仍需独立审查任务分布。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/decision.json",
+        "templates/decision-record.md"
+      ],
+      "gaps": [
+        "无自动 HPO、随机搜索、Hyperband、嵌套选择 bootstrap 或累计搜索成本分析器。",
+        "保留种子与哈希不防止人为偷看测试结果；HPO 仍需独立登记并由团队执行访问隔离。"
+      ]
+    },
+    {
+      "id": "stats-sensitivity",
+      "kind": "chapter",
+      "title": "08 · 跨环境设置与超参数敏感性：峰值之外的算法品质",
+      "question": "方法是否需要逐环境重调，以及所谓自动适应是否把敏感性转移到元参数？",
+      "principle": "同时报告共享配置与逐环境调参表现，事先固定任务权重、归一化参考和搜索范围。单变量固定其余参数与重新调优回答不同问题；关键参数交互、奖励尺度、更新率和漂移速度必须由有判别力的开发矩阵揭示。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/statistics.md",
+        "docs/algorithm-design.md",
+        "docs/continual-project-playbooks.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "plan",
+          "purpose": "可展开人工登记的固定配置 arms×环境×种子矩阵；不会构造搜索空间、选择最优配置或计算敏感性。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_all_profiles_and_exact_population",
+          "purpose": "仅验证预选 arms×envs×seeds 展开数量与协议一致。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "{PROTOCOL}",
+            "--summary"
+          ],
+          "purpose": "核算人工登记敏感性试验的完整人口与交互预算。",
+          "mode": "read_only",
+          "requires": [
+            "{PROTOCOL} 是把固定参数配置显式登记为 arms 的有效原生协议；不可将测试结果反馈为同次独立确认。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "CHTB/CHS、逐环境—共享配置差值 Φ、有效超参数维度、经验 CDF 归一化和交互热图未实现。",
+        "plan 是人口与预算展开器，不能据其成功断言搜索覆盖充分或方法易调。"
+      ]
+    },
+    {
+      "id": "stats-power",
+      "kind": "chapter",
+      "title": "09 · 种子数量与统计功效：用可检测差异决定预算",
+      "question": "正式重复数量如何由可检测改善和所需精度决定，而不是套用固定 seed 数？",
+      "principle": "先定义实际意义阈值 δ，用独立试点评估配对差值或独立组方差，并模拟实际分析在重尾、失败混合、调参层级下的表现。预算不足时收缩主张；预先规定停止，零次失败也不能推成低失败风险。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/statistics.md",
+        "docs/iteration.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "只检查 minimum_effect 非负、种子去重、schema 最低数量与最大交互预算；不计算功效。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "plan",
+          "purpose": "将人工选定的样本数转换为完整人口和最大交互成本。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_invalid_fields_rejected_before_execution",
+          "purpose": "验证非法 seed 和非有限 minimum_effect 被拒绝；不验证 seed 数足够检出效应。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "profiles/classic.json",
+            "--summary"
+          ],
+          "purpose": "查看 smoke 预算；两次运行仅为快速通路示例，不是功效建议。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/project-charter.md",
+        "templates/research-card.md"
+      ],
+      "gaps": [
+        "正态/t 分布功效规划、覆盖率模拟、失败率区间、序贯检验与合法停止边界均未实现。",
+        "不能把 CLI 接受的两个 seed 或 bootstrap 重复次数当作独立信息量。"
+      ]
+    },
+    {
+      "id": "stats-intervals",
+      "kind": "chapter",
+      "title": "10 · 区间回答不同问题：均值确定，不代表运行稳定",
+      "question": "均值差的区间、运行波动和未来坏运行风险应该怎样分别报告？",
+      "principle": "均值置信区间刻画估计不确定性，样本标准差与分位数刻画已有运行的离散性，预测或容忍区间另有假设。增加 seed 不能消除算法波动；逐时间点区间不能冒充整条曲线同时覆盖。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "paired_interval",
+          "purpose": "对完整配对差值有放回抽样，返回均值的 percentile bootstrap 区间；默认 95%。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "逐环境同时输出差值列表、均值、中位数、样本标准差和 bootstrap 区间。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_paired_statistics_constant_difference_and_direction",
+          "purpose": "检查常数差值区间退化为常数，单对样本被拒绝，最小化指标方向正确。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "compare",
+            "{RUN_DIR}",
+            "--candidate",
+            "sarsa",
+            "--baseline",
+            "q_learning",
+            "--bootstrap",
+            "10000"
+          ],
+          "purpose": "输出固定环境内配对均值差的描述性区间。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是 classic 结构的完整有效人口。",
+            "配对与独立训练单位已经人工核实；默认区间的小样本覆盖率可能较差。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/classic.json"
+      ],
+      "gaps": [
+        "未实现预测区间、容忍区间、同时置信带、尾部风险或失败概率区间。",
+        "当前区间没有调参或多重比较校正；测试验证计算性质，不构成所有 RL 分布上的覆盖率保证。"
+      ]
+    },
+    {
+      "id": "stats-aggregate",
+      "kind": "chapter",
+      "title": "11 · 跨任务聚合：同时保留分布形状与实际改善量",
+      "question": "如何跨任务汇总而不让不同量纲、样本数和被隐藏的退化任务扭曲结论？",
+      "principle": "预先定义任务权重与归一化，并对每条运行先变换再聚合；同时保留逐任务原始表现。IQM、性能剖面和独立运行的改善概率分别回答不同问题；重采样须匹配固定任务、新任务总体或完整调参的实际层级。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/statistics.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "仅输出每个固定环境的配对差值，不合并不同环境原始回报；正差配对比例明确不是 rliable 的跨运行改善概率。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "markdown_report",
+          "purpose": "按环境与方法分别报告完成/失败/缺失/无效及含失败分值的均值。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_paired_statistics_constant_difference_and_direction",
+          "purpose": "检验逐环境方向统一；没有覆盖 IQM 或跨任务 bootstrap。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "report",
+            "{RUN_DIR}"
+          ],
+          "purpose": "查看逐环境结果与失败人口，保留聚合前的证据。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是已执行或导入的结果目录，包含有效锁文件。"
+          ]
+        }
+      ],
+      "assets": [
+        "docs/sources.json"
+      ],
+      "gaps": [
+        "IQM、任务权重、性能剖面、目标缺口、rliable 改善概率、任务层 bootstrap 尚未实现。",
+        "跨环境归一化参考及其估计误差需要另存并审计；当前工具不会自动生成基准总排名。"
+      ]
+    },
+    {
+      "id": "stats-comparisons",
+      "kind": "chapter",
+      "title": "12 · 显著性、实际价值与多重比较",
+      "question": "怎样区分统计差异、实际价值、证据不足和等价，控制分析自由度？",
+      "principle": "事先声明主指标、主预算、主要基线与 δ；报告差值及区间而不是只挑显著结果。多候选、多时间点与子集筛选都可能放大误报，等价需要预定界限和专门分析；CI 跨零不能证明两法相同。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/iteration.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "仅允许已登记基线，按 maximize/minimize 统一改善方向，输出 minimum_effect 与未校正声明。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "要求显式决策与证据引用，不根据正差或区间自动晋升。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_paired_statistics_constant_difference_and_direction",
+          "purpose": "检验最大化/最小化的差值方向及配对摘要。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_next_never_runs_and_confirmation_uses_reserved_seeds",
+          "purpose": "验证决策创建新草案而非自动训练或自动确认有效。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "compare",
+            "{RUN_DIR}",
+            "--candidate",
+            "sarsa",
+            "--baseline",
+            "q_learning"
+          ],
+          "purpose": "输出一个登记候选对基线的描述，需按主比较计划解释。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 为包含登记的 q_learning 基线与 sarsa 的完整有效结果目录。",
+            "不得用多次调用后挑选的最佳区间冒充预注册主比较。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/decision-record.md",
+        "templates/decision.json"
+      ],
+      "gaps": [
+        "Welch、置换、等价检验、Holm/Bonferroni、FDR 及序贯分析未实现。",
+        "observed_positive_pair_fraction 不表示统计显著性、后验优越概率或跨运行改善概率。"
+      ]
+    },
+    {
+      "id": "stats-recipe",
+      "kind": "chapter",
+      "title": "13 · 可直接执行的统计实验单",
+      "question": "怎样将统计实验单落实为可重复执行、保留失败且可审计的完整证据包？",
+      "principle": "冻结问题、随机层级、选择规则、预算和失败效用后执行完整预定人口。区分算法失败、基础设施中断、缺失与损坏；保留原始运行及未完成状态。报告结果与限制并写下下一决定，不按幸存前缀重新定义比较人口。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/protocol-reference.md",
+        "docs/iteration.md",
+        "docs/statistics.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "freeze",
+          "purpose": "保存协议、全部计划 job、源码摘要和运行时版本。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "audit",
+          "purpose": "逐项对账完整计划人口与工件摘要，区分失败、缺失和无效。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "拒绝不完整或无效人口的比较；对实际算法失败使用预先登记的复合分值并标注估计对象变化。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_failed_jobs_are_kept_not_dropped",
+          "purpose": "模拟算法失败，验证原始失败证据与预定分值保留，配对人口不缩水。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_missing_jobs_cannot_be_silently_scored",
+          "purpose": "验证缺失 job 不被填成失败分数，且不能开始比较。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_modified_result_or_artifacts_invalidate_job",
+          "purpose": "验证改动原始事件或结果会被标为无效。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "audit",
+            "{RUN_DIR}"
+          ],
+          "purpose": "在分析前对齐计划与结果人口。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 为已有运行或导入结果目录。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "report",
+            "{RUN_DIR}",
+            "--out",
+            "{NEW_REPORT}"
+          ],
+          "purpose": "写出保留失败、缺失与效能边界的 Markdown 报告。",
+          "mode": "creates_files",
+          "requires": [
+            "{RUN_DIR} 为已有结果目录；{NEW_REPORT} 必须不存在。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/iteration-log.md",
+        "templates/decision-record.md",
+        "profiles/classic.json"
+      ],
+      "gaps": [
+        "工具支持证据封装和有限配对分析，尚不生成 IQM、性能剖面、完整 HPO 成本或统计功效。",
+        "摘要用于检测意外漂移，不认证外部数据真实；缺失任务仍需追查，不可凭打包结果宣称实验完成。"
+      ]
+    },
+    {
+      "id": "alg-classical",
+      "kind": "chapter",
+      "title": "14 · 经典强化学习：先建立可以被推翻的正确性证据",
+      "question": "经典算法是否实现了声称的更新目标、终止边界与随机递推，而非仅在一个任务上涨分？",
+      "principle": "先用独立真值、手算轨迹、采样期望和已知反例检查算法；声明收敛或近似目标的条件。表格、线性预测、off-policy、trace 与平均奖励各有不同目标，不能用同一个 TD loss 或小任务稳定性替代全部验证。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/testing.md",
+        "docs/algorithm-design.md",
+        "docs/catalog.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditLearner.update",
+          "purpose": "实现样本均值或固定 alpha 的动作值递推。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "td_target",
+          "purpose": "区分 Q-learning 的 max backup 与 Sarsa 的下一采样动作，真正终止阻断 bootstrap。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "CliffGrid.step",
+          "purpose": "提供教学网格的悬崖非终止复位、目标终止与外部时间截断语义。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_sample_average_is_exact_empirical_average",
+          "purpose": "以固定奖励验证在线样本均值。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_constant_alpha_retains_recency",
+          "purpose": "以手算序列验证常数步长近期加权。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_external_time_limit_preserves_actual_observation_and_bootstrap",
+          "purpose": "检查最终真实状态、Q-learning/Sarsa 不同 target 和终止遮罩。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/classic.json"
+          ],
+          "purpose": "验证 Q-learning/Sarsa 教学配置和环境语义的参数约束。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "freeze",
+            "profiles/classic.json",
+            "--out",
+            "{NEW_LOCK}"
+          ],
+          "purpose": "为经典 smoke 示例生成新版本锁。",
+          "mode": "creates_files",
+          "requires": [
+            "{NEW_LOCK} 必须不存在；此默认配置只用于通路与边界检查。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "run",
+            "{LOCK}",
+            "--out",
+            "{NEW_RUN_DIR}"
+          ],
+          "purpose": "执行已冻结经典教学人口并保留原始事件。",
+          "mode": "runs_smoke",
+          "requires": [
+            "{LOCK} 由 profiles/classic.json 在当前源码与运行时下冻结。",
+            "{NEW_RUN_DIR} 必须不存在；4 条运行的默认完整交互上限为 14400。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/classic.json",
+        "profiles/continual.json",
+        "catalog/algorithms.json"
+      ],
+      "gaps": [
+        "未实现独立 MRP 线性真值求解、MC、TD(λ)/true-online、GTD/TDC、重要性采样、Baird 反例或平均奖励控制。",
+        "教学 CliffGrid 不是对任何外部官方环境的逐步等价认证；有限测试不能证明收敛或算法效能。"
+      ]
+    },
+    {
+      "id": "alg-deep",
+      "kind": "chapter",
+      "title": "15 · 现代深度强化学习：把算法与实现共同视为被测对象",
+      "question": "如何把网络、优化器、采样与轨迹边界视为算法的一部分，识别实现混杂和伪增益？",
+      "principle": "先审计真实 transition、bootstrap 与 trace 连续性，再逐算法族检查目标、梯度和状态。机制比较、充分调参比较与资源比较分开；DQN、PPO、SAC/TD3、replay、RNN 和模型学习各自需要特定仪表，通路 smoke 不替代这些审计。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/testing.md",
+        "docs/deep-validation.md",
+        "docs/extension-guide.md",
+        "docs/algorithm-design.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_ppo",
+          "purpose": "调用可选 SB3 PPO/CartPole，按 rollout 整倍数训练，记录原始奖励并用新环境做独立冻结评价。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "validate_job",
+          "purpose": "检查 PPO rollout、batch 整除、预算和当前支持的参数。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "runtime",
+          "purpose": "记录 Python 与已安装关键深度依赖的版本；不是完整可移植依赖锁。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_real_optional_ppo_budget_and_frozen_evaluation",
+          "purpose": "可选真实 PPO 集成测试检查训练步、回合人口、评价冻结与 CPU 运行；需显式启用。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_missing_optional_dependencies_fail_with_actionable_message",
+          "purpose": "验证缺少深度依赖时给出明确错误。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_unsupported_and_incomplete_configs_are_explicit_errors",
+          "purpose": "验证不支持算法、未知配置及非法 PPO rollout/batch 约束被拒绝。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/deep.json"
+          ],
+          "purpose": "验证深度 smoke 的结构与已知能力，不保证依赖已经安装。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "freeze",
+            "profiles/deep.json",
+            "--out",
+            "{NEW_LOCK}"
+          ],
+          "purpose": "安装并固定深度依赖后冻结当前运行时。",
+          "mode": "creates_files",
+          "requires": [
+            "先在独立 Python 环境安装 examples/deep-requirements.txt。",
+            "{NEW_LOCK} 必须不存在。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "run",
+            "{LOCK}",
+            "--out",
+            "{NEW_RUN_DIR}"
+          ],
+          "purpose": "执行固定两组 PPO 参数的 CartPole 通路检查。",
+          "mode": "runs_smoke",
+          "requires": [
+            "{LOCK} 由 profiles/deep.json 在相同源码和依赖环境下冻结。",
+            "{NEW_RUN_DIR} 必须不存在；默认 4 条运行交互上限 1824。",
+            "此测试不支持学习率优劣、调好 PPO 或深度算法竞争力结论。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/deep.json",
+        "examples/deep-requirements.txt",
+        "catalog/algorithms.json"
+      ],
+      "gaps": [
+        "DQN/Rainbow、SAC/TD3、RNN、经验回放与模型算法尚无原生执行器；当前 PPO 不是自写梯度正确性验证套件。",
+        "没有通用 GAE/向量 autoreset 测试、tanh 雅可比检查、完整 checkpoint 生命期恢复或跨实现效能确认。"
+      ]
+    },
+    {
+      "id": "alg-benchmarks",
+      "kind": "chapter",
+      "title": "16 · 基准选择：让任务集合对应想要验证的能力",
+      "question": "所选环境集合能够支持哪种能力与外推主张，哪些接口、数据和权限必须固定？",
+      "principle": "每项主张用可解问题、针对性压力条件和外部任务族承担不同证据角色。记录包装器、版本、观察、动作与时间单位；离线数据还需轨迹级划分、支持条件和评价权限。未见 seed、未见生成器和真实部署是不同外推层级。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/catalog.md",
+        "docs/extension-guide.md",
+        "docs/external-adapters.md",
+        "docs/testing.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "validate_job",
+          "purpose": "仅对原生教学环境与算法组合验证已知配置，未知环境显式报错。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "对外部生产者的完整预定人口、原始工件和来源记录做导入验证；不认证外部环境或 OPE 方法。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_unsupported_and_incomplete_configs_are_explicit_errors",
+          "purpose": "检验环境/算法不兼容或未知配置不会静默执行。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_external_import_complete_bound_raw_population",
+          "purpose": "验证外部人口完整、结果绑定锁与原始工件被保留；只验证封装。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/classic.json"
+          ],
+          "purpose": "检查实际原生环境能力，不把目录中的参考环境视作已集成。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        }
+      ],
+      "assets": [
+        "catalog/environments.json",
+        "catalog/algorithms.json",
+        "profiles/classic.json",
+        "profiles/deep.json",
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "ALE、bsuite、Procgen、DM Control、D4RL/Minari 等目录条目不等于已安装或运行的适配器。",
+        "无 OPE 真值实验、IS/WIS/FQE/DR、支持性或覆盖率分析实现；环境代表性与离线数据泄漏需专门审阅。"
+      ]
+    },
+    {
+      "id": "alg-test-matrix",
+      "kind": "chapter",
+      "title": "17 · 可复制测试矩阵：通过条件与证据边界一起写",
+      "question": "怎样为每级测试写出独立预期、通过标准和不能证明的内容，并将其纳入迭代？",
+      "principle": "按单步代数、真值、采样、梯度、边界、反例、记忆和闭环归因逐层设门。容差依据精度与条件数，随机测试提前固定判据；只有通过相关实现门后才解释效能，不用扩大测试数量代替有判别力的实验。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/testing.md",
+        "docs/algorithm-design.md",
+        "docs/iteration.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "td_target",
+          "purpose": "提供可独立手算的 Sarsa/Q-learning 单步边界。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "要求按 implementation、mechanism、performance 分层登记测试意图。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "check_measurements",
+          "purpose": "对完成运行核对训练时域、评价人口与有限主指标。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_goal_termination_has_precedence_at_time_limit",
+          "purpose": "验证真正目标终止与同一步时间限制重合时采用终止语义。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_eval_budget_does_not_change_training",
+          "purpose": "检验表格冻结评价隔离，而非只检查评价曲线看似合理。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_external_eval_cannot_be_zero_or_incomplete",
+          "purpose": "验证外部结果不能用零评价步或不完整回合冒充完成评价。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/classic.json"
+          ],
+          "purpose": "检查示例三层验收声明与执行参数；自然语言测试并不会被自动运行。",
+          "mode": "read_only",
+          "requires": [
+            "在仓库根目录运行，使用 Python 3.9+。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "audit",
+            "{RUN_DIR}"
+          ],
+          "purpose": "对已运行测试/实验保留人口完整性的证据。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是工作台已生成或导入的结果目录。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/iteration-log.md",
+        "profiles/classic.json",
+        "profiles/deep.json"
+      ],
+      "gaps": [
+        "完整测试矩阵中的精确求解、有限差分、true-online 等价、Baird、延迟线索 POMDP 与保存恢复套件尚未原生实现。",
+        "经典配方 A 与深度配方 B 是待项目化执行的方案，不因本仓库已有部分单元测试就视为完成。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-03",
+  "scope": "handbook integration and native event-stream analytics regression",
+  "claim_status": "documentation_and_tooling_validation_only",
+  "base_commit": "a8e504865fd8886dfc21104b76a4b16916577861",
+  "original_handbook_unchanged": true,
+  "source_sha256": "1bda47d33d75960c234d521ae4ff2f1dde8d53577ef9a38b0997c655c33b655f",
+  "generator_sha256": "b6057d89735ae712deac21ecfa84e9373a1c1ac8fbf64fffc60f8aa9326431f3",
+  "cli_sha256": "4e469657ffca03d152539a3425bbe99dfe463f849b123bbe91711f9e4c005256",
+  "coverage": {
+    "chapters": 37,
+    "extensions": 7,
+    "source_records": 81,
+    "source_templates": 6
+  },
+  "local_tests": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "python": "3.9.6",
+    "total": 70,
+    "passed": 69,
+    "skipped": 1,
+    "skip_reason": "optional PPO integration requires RLWORKBENCH_TEST_DEEP=1",
+    "handbook_tests": 9,
+    "native_training_stream_integration": "passed"
+  },
+  "repository_check": "passed",
+  "html_structural_check": "passed using html-documents check_html_artifact.py",
+  "github_markdown_rendering_review": {
+    "source": "GitHub Markdown API rendering checked by independent review agent",
+    "tables": 20,
+    "rows": 241,
+    "cells": 825,
+    "normalized_cell_text_equal_to_original": true,
+    "source_metadata_retained": true
+  },
+  "browser": {
+    "engine": "Chromium through Playwright CLI",
+    "desktop_viewport": [
+      1440,
+      1080
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "horizontal_page_overflow": false,
+    "chapter_maps": 37,
+    "broken_internal_anchors": 0,
+    "search_summarize_matches": 3,
+    "clear_search_restores": 37,
+    "map_expansion": "passed",
+    "template_download_matches_source": true,
+    "source_download_matches_all_81_records": true,
+    "local_checklist_persistence": "passed; test checkbox reset",
+    "screenshots": "Local QA captures excluded from repository"
+  },
+  "limitations": [
+    "Tests and mapping validity do not establish algorithm efficacy or causal mechanism claims.",
+    "Two original research projects remain external-adapter proposals; no new full project experiments were launched.",
+    "High-level GVF, options, abstraction, planning and MARL algorithms remain unimplemented where declared in mapping gaps.",
+    "CLI command syntax is checked without executing commands in mappings.",
+    "No fresh optional deep backend run in this integration pass; historical deep validation remains separately dated."
+  ]
+}

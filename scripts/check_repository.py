@@ -8,8 +8,10 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from rlworkbench.core import load, validate
+from handbook import check as check_handbook
 
 errors = []
+errors += check_handbook()
 files = [ROOT / "README.md", ROOT / "AGENTS.md", ROOT / "CONTRIBUTING.md"]
 files += list((ROOT / "docs").glob("*.md")) + list((ROOT / "templates").glob("*.md"))
 for p in files:

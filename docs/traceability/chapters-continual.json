@@ -1,0 +1,1145 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "crl-framing",
+      "kind": "chapter",
+      "title": "18 · 持续强化学习：把整个生命期作为实验对象",
+      "question": "研究的是持续运行、严格流式约束、未知变化，还是新经验长期带来的收益？",
+      "principle": "把完整学习器和整个生命期作为实验对象；持续、streaming、非平稳与部分可观测分别声明，不能由短程成功推断终身学习能力。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/navigation-map.md",
+        "docs/continual-project-playbooks.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_bandit",
+          "purpose": "一个生命期只初始化一次 learner，隐藏切换只写诊断，不传任务标识。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_hidden_boundaries_and_no_lifetime_reset",
+          "purpose": "检查 bandit 的边界不可见和无生命期重置。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/continual.json"
+          ],
+          "purpose": "核对最小持续示例的协议与原生能力。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/continual.json",
+        "catalog/environments.json"
+      ],
+      "gaps": [
+        "原生环境仅非平稳 bandit；不实现连续具身世界、深度可塑性或终身学习证明。"
+      ]
+    },
+    {
+      "id": "crl-objectives",
+      "kind": "chapter",
+      "title": "19 · 目标、时间与被比较的系统",
+      "question": "有限生命期的真实收益、折扣训练目标和资源成本分别如何定义？",
+      "principle": "主目标按预定完整生命期原始奖励计分；状态含权重以外的统计、记忆和优化器；只观测到前缀不能冒充完成生命期。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_bandit",
+          "purpose": "每步累加实际原始奖励，最终除以注册步数。"
+        },
+        {
+          "path": "rlworkbench/continual_metrics.py",
+          "symbol": "summarize",
+          "purpose": "区分完整生命期均值与 observed-prefix 均值。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_full_lifetime_aggregation_uses_every_raw_reward",
+          "purpose": "核对生命期每条原始奖励都参与主指标。"
+        },
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_full_lifetime_and_segments_include_every_raw_reward",
+          "purpose": "核对阶段和全生命期奖励账本。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "profiles/continual.json",
+            "--summary"
+          ],
+          "purpose": "展开交互预算与独立运行人口。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "工具不强制墙钟、每步延迟和总内存上限；没有完整 learner checkpoint 保存恢复器。"
+      ]
+    },
+    {
+      "id": "crl-nonstationarity",
+      "kind": "chapter",
+      "title": "20 · 先辨明变化来源，再设计对照",
+      "question": "观察到的漂移来自环境外生变化、策略闭环、观测混淆还是学习器老化？",
+      "principle": "先分别验证固定经验流、闭环控制和外生变化；同 seed 可配对外生随机源，不能声称两个策略具有相同完整轨迹。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/continual-project-playbooks.md",
+        "docs/testing.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditStream.step",
+          "purpose": "按隐藏相位生成每动作潜在奖励；每步的噪声向量与所选动作无关。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditLearner.update",
+          "purpose": "更新仅接收动作和奖励，不能读取 phase。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_potential_reward_noise_is_not_action_conditioned_rng",
+          "purpose": "检验动作改变不改变外生潜在奖励噪声的消费。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_hidden_boundaries_and_no_lifetime_reset",
+          "purpose": "检查隐藏边界不传 learner。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "profiles/continual.json",
+            "--summary"
+          ],
+          "purpose": "查看静态与隐藏切换对照的完整人口。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/continual.json",
+        "protocols/streamrate-development.json",
+        "protocols/representation-development.json"
+      ],
+      "gaps": [
+        "bandit 使用固定间隔循环；连续漂移、随机时长、观测变化与复杂内生漂移仍需外部适配器。"
+      ]
+    },
+    {
+      "id": "crl-benchmarks",
+      "kind": "chapter",
+      "title": "21 · 基准选择：原始协议与建议变体必须分开",
+      "question": "如何保留 CW20、COOM、Forager、AgarCL 的原始协议并标明本研究变体？",
+      "principle": "锁定版本、世界与 learner 的 reset 语义、任务权限、真实奖励账本；目录条目不能当作已完成环境集成。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/catalog.md",
+        "docs/continual.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "catalog/environments.json",
+        "docs/sources.json"
+      ],
+      "gaps": [
+        "CW20、COOM、Forager 和 AgarCL 均为参考选型，当前未接入原生执行器。",
+        "奖励差值望远镜恒等、死亡补偿和自然重生需要针对所选实现逐条审计；仓库不自动验证这些语义。"
+      ]
+    },
+    {
+      "id": "crl-evaluation",
+      "kind": "chapter",
+      "title": "22 · 在线主评估，冻结与回访作为诊断",
+      "question": "在线收益与冻结副本、继续学习分支、旧任务回访如何互不污染？",
+      "principle": "持续主评估允许按协议在线更新；冻结诊断须隔离经验、随机状态及统计，权重冻结与递归状态冻结分开。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/testing.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_bandit",
+          "purpose": "动作先于该步反馈，在线收益包含探索成本。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_tabular",
+          "purpose": "教学表格法训练后使用独立环境和随机流评价。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_ppo",
+          "purpose": "可选 PPO 路径在独立环境中进行冻结策略评价。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_eval_budget_does_not_change_training",
+          "purpose": "评价预算变化不改变表格法训练事件前缀。"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_tabular_frozen_eval_and_episode_accounting",
+          "purpose": "核对冻结评价与回合计数。"
+        }
+      ],
+      "commands": [],
+      "assets": [
+        "profiles/continual.json",
+        "profiles/classic.json",
+        "profiles/deep.json"
+      ],
+      "gaps": [
+        "没有持续神经学习器中期状态快照、同起点学习/冻结反事实分支或完整旧任务回访矩阵实现。",
+        "既有冻结隔离测试只覆盖教学表格实现，不能认证外部算法的 buffer、normalizer、hidden state 隔离。"
+      ]
+    },
+    {
+      "id": "crl-metrics",
+      "kind": "chapter",
+      "title": "23 · 把收益、保留、可塑性与资源分别量化",
+      "question": "生命期收益、恢复、保留、迁移、可塑性和资源怎样各自计量？",
+      "principle": "恢复定义固定窗口、步长、阈值和确认时刻；变化索引从零、奖励时钟从一；崩溃与行政删失分开；窗口不是独立生命期。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/continual-project-playbooks.md",
+        "docs/protocol-reference.md",
+        "docs/statistics.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/continual_metrics.py",
+          "symbol": "summarize",
+          "purpose": "从逐步原始奖励计算生命期/阶段统计及以前阶段基线为参照的恢复诊断。"
+        },
+        {
+          "path": "rlworkbench/cli.py",
+          "symbol": "main",
+          "purpose": "continual-metrics 筛选 train 或 training 标签的训练转移并验证 env_step 连续，排除评价事件。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_confirmation_occurs_at_window_end_with_persistence",
+          "purpose": "确认发生在最后一个连续合格窗口末端。"
+        },
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_completed_nonrecovery_censoring_and_crash_are_distinct",
+          "purpose": "完整未恢复、观察提前结束和崩溃分开。"
+        },
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_scale_change_disables_recovery_claim",
+          "purpose": "奖励尺度不可比时不宣称恢复。"
+        },
+        {
+          "path": "tests/test_cli.py",
+          "symbol": "CLITests.test_recovery_cli_checks_clock_and_completed_horizon",
+          "purpose": "核对 CLI 的奖励时钟和完整时域。"
+        },
+        {
+          "path": "tests/test_cli.py",
+          "symbol": "CLITests.test_continual_metrics_reads_native_training_stream",
+          "purpose": "真实原生 bandit 日志进入 CLI；识别 train 标签，排除评价流，核对完整奖励。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "continual-metrics",
+            "{RUN_DIR}/jobs/constant_alpha--hidden_switches--s11/events.jsonl",
+            "--changes",
+            "250,500,750,1000,1250",
+            "--window",
+            "20",
+            "--persistence",
+            "3",
+            "--tolerance",
+            "0.05",
+            "--planned-steps",
+            "1500",
+            "--end-reason",
+            "completed"
+          ],
+          "purpose": "分析默认 continual profile 一条完整生命期，阈值设置仅演示。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 替换为当前代码按 profiles/continual.json 冻结并完成的运行目录；不能使用任意日志。",
+            "该默认 job 的 switch_interval=250、steps=1500，第一条变化后奖励的从零索引为 250,500,750,1000,1250；参数与注册协议一致，容差仅演示。",
+            "先确认该 job 完成；失败或提前中断须用实际终态修改参数，不能填写 completed。"
+          ]
+        }
+      ],
+      "assets": [
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "尚无自动遗忘矩阵、BWT/FWT、年龄匹配可塑性、资源曲线和多生命期生存分析。",
+        "恢复阈值采用旧阶段均值仅是一种已实现定义；新阶段可达性及研究意义仍需人工判定。"
+      ]
+    },
+    {
+      "id": "crl-controls",
+      "kind": "chapter",
+      "title": "24 · 机制归因对照：每个对照回答一个问题",
+      "question": "哪个对照能区别记忆不足、可塑性损失、学习率变化或任务特权？",
+      "principle": "每个 fresh/reset/frozen/oracle/replay 对照只回答预先声明的问题；完整作者方法与同基座模块消融分别命名。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/continual-project-playbooks.md",
+        "docs/algorithm-design.md",
+        "docs/testing.md",
+        "docs/project-patterns.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "protocols/streamrate-development.json",
+        "protocols/representation-development.json",
+        "templates/research-card.md"
+      ],
+      "gaps": [
+        "两个项目中的元信用、表征、记忆与匹配资源对照是待接入方案，不在本仓库执行。",
+        "没有通用 fresh/reset/frozen 生成器；oracle 没有经证明的界时只能作特权诊断。"
+      ]
+    },
+    {
+      "id": "crl-tuning",
+      "kind": "chapter",
+      "title": "25 · 生命期调参与版本约束",
+      "question": "怎样区分独立开发生命期调参、前 k% 选择和测试未来泄漏？",
+      "principle": "固定选择规则与数据访问边界；开发生命期可以完整使用，不能据同一测试生命期后缀修规则；算法论文版本和实现来源一起锁定。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual.md",
+        "docs/statistics.md",
+        "docs/iteration.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "检查开发/保留 seed 不交叠，确认人口与父开发选择身份一致。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "由明确决策选择方法并使用保留 seed 建立待审确认草案。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "freeze",
+          "purpose": "绑定注册协议、作业清单与工作台源文件摘要。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_overlap_and_budget_overrun_rejected",
+          "purpose": "拒绝人口交叠和预算超额。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_next_never_runs_and_confirmation_uses_reserved_seeds",
+          "purpose": "下一轮不自动运行，确认使用保留人口。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "protocols/streamrate-development.json",
+            "--external"
+          ],
+          "purpose": "检查 StreamRate 开发草案结构；不代表适配可执行。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/decision.json",
+        "protocols/streamrate-development.json"
+      ],
+      "gaps": [
+        "没有自动 HPO、前缀指标访问控制或封存未来数据设施；隔离须由团队和外部系统执行。",
+        "input_adapter_ready:false 的两个项目草案允许外部结构验证，但 freeze 被禁止；不得直接启动。"
+      ]
+    },
+    {
+      "id": "crl-recipe-a",
+      "kind": "chapter",
+      "title": "26 · 实验配方 A：持续适应的瓶颈究竟是可塑性还是状态构造？",
+      "question": "Forager 中持续适应瓶颈是状态构造还是保持可塑性？",
+      "principle": "把观测和变化因素、递归状态与可塑性干预分开，设置随机替换、L2 和资源匹配控制，先判机制再作独立长期确认。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/continual-project-playbooks.md",
+        "docs/continual.md",
+        "docs/prediction-abstraction-options.md",
+        "docs/algorithm-design.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "protocols/representation-development.json",
+        "templates/research-card.md",
+        "templates/module-card.md",
+        "catalog/environments.json"
+      ],
+      "gaps": [
+        "原手册配方 A 的 Forager 2×2 因子实验、CBP/ReDo 与长生命期预算均未实现或执行。",
+        "representation-development.json 是两个当前项目的另一份开发草案，不能冒充配方 A 的直接可运行配置。"
+      ]
+    },
+    {
+      "id": "crl-recipe-b",
+      "kind": "chapter",
+      "title": "27 · 实验配方 B：任务序列中“少遗忘”是否换来了“学不动”？",
+      "question": "任务序列中较少遗忘是否以学不动新任务为代价？",
+      "principle": "同时测完整在线收益、习得、保留和第一次/第二次访问；回访评价不回灌，任务身份和增长内存对照标明权限。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/continual.md",
+        "docs/continual-project-playbooks.md",
+        "docs/statistics.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "catalog/environments.json",
+        "templates/research-card.md",
+        "docs/sources.json"
+      ],
+      "gaps": [
+        "未实现或执行 CW20/COOM 配方、P_i,j 回访矩阵和 fresh 单任务参考。",
+        "不能以 bandit 隐藏切换运行替代任务序列的遗忘与迁移证据。"
+      ]
+    },
+    {
+      "id": "crl-longrun",
+      "kind": "chapter",
+      "title": "28 · 长期试验阶梯与最小交付包",
+      "question": "短程资格测试如何逐步扩展到能暴露迟发退化的长生命期？",
+      "principle": "短到长沿同一锁定协议的预定阶梯运行；失败与未完成保持可见，复杂环境成功不能由简单环境代替。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual-project-playbooks.md",
+        "docs/iteration.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "check_measurements",
+          "purpose": "完成回执必须达到注册训练时域及评价计数。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "audit",
+          "purpose": "区分完成、失败、缺失、无效，保留计划人口。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "导入完整外部人口并绑定原始文件。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_missing_jobs_cannot_be_silently_scored",
+          "purpose": "未完成不能悄悄补成分值后排名。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_failed_jobs_are_kept_not_dropped",
+          "purpose": "失败运行保留在比较人口内。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "protocols/streamrate-development.json",
+            "--external",
+            "--summary"
+          ],
+          "purpose": "展开项目草案的全部交互上限，未触发执行。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "protocols/streamrate-development.json",
+        "protocols/representation-development.json"
+      ],
+      "gaps": [
+        "无长程调度、checkpoint 恢复、内存/延迟监控器和自动阶段推进；预算与停止仍需外部系统落实。",
+        "教学 smoke 和模板预算均不构成长程效果证据。"
+      ]
+    },
+    {
+      "id": "ops-workflow",
+      "kind": "chapter",
+      "title": "29 · 实验执行：从预注册到独立确认",
+      "question": "如何从问题、机制、开发走到冻结执行、独立确认和下一轮决策？",
+      "principle": "把环境、学习器与实验控制分开；计划人口先于结果，旧协议和结果不覆盖，改动产生新版本与明确证据来源。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/iteration.md",
+        "docs/start-here.md",
+        "docs/protocol-reference.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "plan",
+          "purpose": "注册方法×环境×seed 的完整笛卡尔积。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "freeze",
+          "purpose": "固定协议、源码摘要与作业身份。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "run",
+          "purpose": "只在新目录运行锁定的原生计划。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "基于显式决策生成后继草案，不自动选赢家或执行。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_freeze_binds_config_jobs_and_source",
+          "purpose": "修改配置、作业或源摘要会破坏锁身份。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_run_and_receipts_reconcile",
+          "purpose": "核对计划、运行与回执对账。"
+        },
+        {
+          "path": "tests/test_cli.py",
+          "symbol": "CLITests.test_documented_full_path_and_budget_summary",
+          "purpose": "走通 CLI 的冻结、运行、审计和报告链。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "freeze",
+            "profiles/continual.json",
+            "--out",
+            "{NEW_LOCK}"
+          ],
+          "purpose": "冻结原生持续 smoke 配方；写入新锁文件。",
+          "mode": "creates_files",
+          "requires": [
+            "{NEW_LOCK} 替换为不存在的 .json 路径；本命令只冻结，不运行实验。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "run",
+            "{LOCK}",
+            "--out",
+            "{RUN_DIR}"
+          ],
+          "purpose": "执行已经冻结的原生教学持续 profile。",
+          "mode": "runs_smoke",
+          "requires": [
+            "{LOCK} 是由当前代码冻结 profiles/continual.json 得到的文件。",
+            "{RUN_DIR} 必须为新目录；不适用于待接入的外部项目草案或长程实验。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "audit",
+            "{RUN_DIR}"
+          ],
+          "purpose": "核对计划人口、终态和文件身份。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是真实已运行目录，含 lock.json 和 jobs/。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/iteration-log.md",
+        "templates/decision-record.md"
+      ],
+      "gaps": [
+        "工具不自动审查因果设计、不执行完整 HPO，也不提供集群调度、精确 checkpoint 恢复或远程真实性认证。"
+      ]
+    },
+    {
+      "id": "ops-diagnostics",
+      "kind": "chapter",
+      "title": "30 · 诊断手册：症状、竞争解释与下一项实验",
+      "question": "回报曲线异常时，先排查哪些可以区分的原因？",
+      "principle": "从奖励/时间语义到更新、经验分布、评价副作用和资源逐层定位；实现正确、机制指标和控制收益分开。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/testing.md",
+        "docs/algorithm-design.md",
+        "docs/continual-project-playbooks.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "EventWriter.write",
+          "purpose": "记录可追溯原始转移、计数和有限 JSON 数据。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "check_measurements",
+          "purpose": "检查预算、终点、评价与有限指标，防止账本错误。"
+        },
+        {
+          "path": "rlworkbench/continual_metrics.py",
+          "symbol": "summarize",
+          "purpose": "生成阶段奖励与变化后恢复诊断，不能替代机制归因。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_eval_budget_does_not_change_training",
+          "purpose": "隔离评价对训练前缀的潜在污染。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_modified_result_or_artifacts_invalidate_job",
+          "purpose": "检测修改结果和原始文件。"
+        }
+      ],
+      "commands": [],
+      "assets": [
+        "templates/research-card.md",
+        "templates/iteration-log.md"
+      ],
+      "gaps": [
+        "未内置通用梯度/KL/有效秩/dormancy/TD 误差及系统资源采集；外部 producer 必须补齐。",
+        "无法自动从单条回报曲线判断优化、探索、记忆或可塑性的原因。"
+      ]
+    },
+    {
+      "id": "ops-extensions",
+      "kind": "chapter",
+      "title": "31 · 扩展场景：离线选择、真实系统、多智能体与大模型智能体",
+      "question": "离线选择、真实系统、MARL 与 LLM 智能体应如何改变实验边界？",
+      "principle": "先定义被比较系统、数据与部署权限、持久状态和实际成本；团队或共享上游模型的相关性不能当独立重复。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/multi-agent.md",
+        "docs/planning-and-architecture.md",
+        "docs/prediction-abstraction-options.md",
+        "docs/external-adapters.md",
+        "docs/navigation-map.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "检查声明的信息流、模块引用、同事件循环和诊断信息流向。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "为真实外部系统接收完整人口和原始证据，不认证外部实现。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_diagnostic_taint_cannot_be_laundered_by_middle_module",
+          "purpose": "声明的诊断信息不能经中间模块洗成行动输入。"
+        },
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_template_is_structurally_valid_but_only_proposed",
+          "purpose": "结构成立与模块实现分开。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "examples/designs/marl-crossplay.json"
+          ],
+          "purpose": "检查多智能体设计声明，不启动 MARL。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "examples/designs/gvf-option-ablation.json"
+          ],
+          "purpose": "检查 GVF/option 消融设计声明，不运行高层模块。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "examples/designs/marl-crossplay.json",
+        "examples/designs/gvf-option-ablation.json",
+        "catalog/modules.json"
+      ],
+      "gaps": [
+        "离线 OPE/Data2Online、机器人、LLM 经验学习和 MARL 不在原生执行器内；高层模块契约不是运行时信息流证明。",
+        "真实不可重置系统的纵向因果识别与安全执行需另设计，不能虚构独立生命期。"
+      ]
+    },
+    {
+      "id": "ops-evidence",
+      "kind": "chapter",
+      "title": "32 · 如何画图、写结论和判断证据够不够",
+      "question": "如何让每个结论对应合适的图、区间、反例与适用边界？",
+      "principle": "先报告差值、分布、失败、成本和逐任务异质性，再限定最强可支持主张；显著性或漂亮图不替代科学证据。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/statistics.md",
+        "docs/iteration.md",
+        "docs/testing.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "按固定环境和配对 seed 输出差值、区间、失败及方法边界。"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "markdown_report",
+          "purpose": "报告完整人口与逐方法/环境分值，明确 smoke 不证效能。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_paired_statistics_constant_difference_and_direction",
+          "purpose": "检查配对差值和指标方向。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_missing_jobs_cannot_be_silently_scored",
+          "purpose": "缺失人口不能进入完整比较。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "compare",
+            "{RUN_DIR}",
+            "--candidate",
+            "constant_alpha",
+            "--baseline",
+            "sample_average"
+          ],
+          "purpose": "对完整 continual smoke 人口生成逐环境描述；不能宣称胜出。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是默认 profiles/continual.json 的完整有效运行；保留失败与全部注册 seed。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "report",
+            "{RUN_DIR}"
+          ],
+          "purpose": "只读输出实验人口及指标报告。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 是真实运行目录；没有 --out 时不创建报告文件。"
+          ]
+        }
+      ],
+      "assets": [
+        "templates/decision-record.md",
+        "templates/research-card.md"
+      ],
+      "gaps": [
+        "没有自动绘图、等效/不劣检验、同时置信带或主张有效性认证。",
+        "现有配对 bootstrap 不校正 HPO、多重比较或任务分布抽样；正差比例不是 rliable 跨运行改善概率。"
+      ]
+    },
+    {
+      "id": "ops-checklist",
+      "kind": "chapter",
+      "title": "33 · 课题组可直接使用的检查清单",
+      "question": "人类和 agent 如何重复检查研究证据而不把勾选当作质量分数？",
+      "principle": "检查表要求给每项主张附实际证据；字段存在、进程退出成功和全部打勾都不能证明科学问题已经回答。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/iteration.md",
+        "docs/testing.md",
+        "docs/protocol-reference.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "检查所声明的协议字段、预算、人口和能力，非科学设计审查。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "audit",
+          "purpose": "核对完整运行人口及文件一致性，不裁定效能。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_invalid_fields_rejected_before_execution",
+          "purpose": "不完整结构不能进入执行。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_modified_result_or_artifacts_invalidate_job",
+          "purpose": "已变更原始证据会被标为无效。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/continual.json"
+          ],
+          "purpose": "执行结构与原生能力检查。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "audit",
+            "{RUN_DIR}"
+          ],
+          "purpose": "将人口完整性作为人工科学审阅的输入。",
+          "mode": "read_only",
+          "requires": [
+            "{RUN_DIR} 替换为待审真实运行目录。"
+          ]
+        }
+      ],
+      "assets": [
+        "docs/research-handbook.html",
+        "templates/research-card.md",
+        "templates/decision-record.md"
+      ],
+      "gaps": [
+        "HTML 勾选和导出只是本地工作辅助；自动检查不检查科学充分性、真实信息权限或因果解释。"
+      ]
+    },
+    {
+      "id": "appendix-comparators",
+      "kind": "chapter",
+      "title": "34 · 补充原则：遗憾、能力泛化与压力测试",
+      "question": "regret 比较者、压力测试、options 和元学习的额外成本怎样声明？",
+      "principle": "比较者的未来信息、模型与切换权限写清；按可控轴测易中难与失效区；技能发现、规划和适应预算一起计账。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/testing.md",
+        "docs/prediction-abstraction-options.md",
+        "docs/planning-and-architecture.md",
+        "docs/continual.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditStream.step",
+          "purpose": "日志保留 selected_mean 与 optimal_mean，限于已知小型 bandit 的诊断比较者。"
+        },
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "检查高层技能与规划声明的边界，不执行这些模块。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_delaying_privileged_information_does_not_make_it_legal",
+          "purpose": "延迟的特权信息仍不能冒充合法行动输入。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "examples/designs/gvf-option-ablation.json"
+          ],
+          "purpose": "核对技能/预测模块声明的依赖与权限。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "examples/designs/gvf-option-ablation.json",
+        "templates/module-card.md"
+      ],
+      "gaps": [
+        "没有通用 regret 计算器或压力测试生成器；Bandit 日志的逐步最优期望不能推广为 MDP 最优控制值。",
+        "尚未实现 option 发现、元学习任务分布抽样及其成本统计。"
+      ]
+    },
+    {
+      "id": "appendix-templates",
+      "kind": "chapter",
+      "title": "35 · 可复制模板与最小数据规范",
+      "question": "怎样把空白研究模板、事件日志、逐运行汇总和机器协议对应起来？",
+      "principle": "原手册模板用于人工预注册与证据登记；CLI profile 是可执行协议格式，两者必须显式转换并逐字段审定，不能将 null 模板当正式实验。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/protocol-reference.md",
+        "docs/external-adapters.md",
+        "docs/extension-guide.md",
+        "docs/start-here.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "load",
+          "purpose": "拒绝非有限 JSON 和重复键，避免协议解释歧义。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "执行协议交叉字段约束。"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "EventWriter.write",
+          "purpose": "输出原生每转移事件；分析回到独立训练/生命期单位。"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "外部 result/producer/原始文件一一绑定注册 job。"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_json_duplicate_keys_and_nan_rejected",
+          "purpose": "拒绝歧义或非有限数据。"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_external_import_complete_bound_raw_population",
+          "purpose": "验证外部完整人口、原始文件与身份绑定。"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "profiles/continual.json"
+          ],
+          "purpose": "检查一份实际可执行机器协议。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "templates/module-contract.json"
+          ],
+          "purpose": "检查一份设计契约，不将其视作算法实现。",
+          "mode": "read_only",
+          "requires": [
+            "从仓库根运行，使用支持当前项目的 Python 环境。"
+          ]
+        }
+      ],
+      "assets": [
+        "docs/research-handbook.html",
+        "schemas/protocol.schema.json",
+        "templates/research-card.md",
+        "templates/module-contract.json",
+        "templates/decision.json",
+        "examples/external-result.json",
+        "examples/external-producer.json"
+      ],
+      "gaps": [
+        "原手册六个下载模板保留在 HTML 内，与 JSON CLI schema 不是字节兼容的同一种格式。",
+        "没有自动把原 YAML/CSV 预注册模板转换成 CLI 协议或统计分析的通用迁移器。"
+      ]
+    },
+    {
+      "id": "appendix-reading",
+      "kind": "chapter",
+      "title": "36 · 精读路线与术语对照",
+      "question": "如何按问题读文献，再返回自己的失败和竞争解释？",
+      "principle": "先用实证设计明确估计对象，再补统计与实现，最后按持续目标和所选环境重写协议；术语始终附具体操作定义。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/navigation-map.md",
+        "docs/algorithm-design.md",
+        "docs/statistics.md",
+        "docs/continual.md",
+        "docs/catalog.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "docs/research-handbook.html",
+        "docs/sources.json"
+      ],
+      "gaps": [
+        "阅读路线与术语是人工理解和 agent 交接入口，不是自动综述更新或算法知识完备性证明。"
+      ]
+    },
+    {
+      "id": "bibliography",
+      "kind": "chapter",
+      "title": "37 · 来源登记与证据边界",
+      "question": "如何把手册的原则追溯到论文、讲义、官方实现与核验范围？",
+      "principle": "来源记录保留版本、核验深度、贡献和边界；文献结果、作者经验、手册建议与本仓库实际运行分开。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/catalog.md",
+        "docs/navigation-map.md"
+      ],
+      "code": [],
+      "tests": [],
+      "commands": [],
+      "assets": [
+        "docs/sources.json",
+        "docs/research-handbook.html"
+      ],
+      "gaps": [
+        "文献快照截至 2026-10-03；没有自动追踪上游论文、库版本或重新验证所有结论。",
+        "源文献提供方法论依据，不证明本仓库两个项目草案或高层模块已经有效。"
+      ]
+    }
+  ]
+}

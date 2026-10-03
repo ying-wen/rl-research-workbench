@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "extension-mechanism-design",
+      "kind": "extension",
+      "title": "整体机制设计与推导桥",
+      "question": "新增机制通过什么可被反证的路径改变完整学习程序的收益？",
+      "principle": "依次区分外部目标、合法状态、模块目标、算子几何、信用时钟、近似实现和全生命期效能。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/mechanism-design.md",
+        "docs/algorithm-design.md",
+        "docs/testing.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "检查声明的模块依赖与权限；不认证机制或理论"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "td_target",
+          "purpose": "经典目标与终止语义的真实可执行参照"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_diagnostic_taint_cannot_be_laundered_by_middle_module",
+          "purpose": "特权诊断经中间模块传播的反例"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_external_time_limit_preserves_actual_observation_and_bootstrap",
+          "purpose": "外部截断不冒充任务终止"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "templates/module-contract.json"
+          ],
+          "purpose": "检查已有示例声明，不执行模块",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/module-card.md",
+        "templates/module-contract.json"
+      ],
+      "gaps": [
+        "没有自动推导、普遍收敛或因果识别认证",
+        "模块声明检查不能发现未声明的运行时信息流",
+        "同基座机制实验仍需研究者或外部算法适配器实现"
+      ]
+    },
+    {
+      "id": "extension-project-lifetimes",
+      "kind": "extension",
+      "title": "两个项目的完整生命期研究",
+      "question": "学习控制或表征记忆修改能否在静态、变化、回访、新规则和长期成本中保持增量价值？",
+      "principle": "外部强方法与共同基座控制并行；隐藏变化不送入 agent；完整生命期是统计单位。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/continual-project-playbooks.md",
+        "docs/project-patterns.md",
+        "docs/continual.md",
+        "docs/mechanism-design.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/continual_metrics.py",
+          "symbol": "summarize",
+          "purpose": "由原始奖励计算生命期、分段、恢复与结束类别"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "validate",
+          "purpose": "验证外部提案的协议字段与预算"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "BanditLearner",
+          "purpose": "不接收变化标签的最小在线估计器"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_completed_nonrecovery_censoring_and_crash_are_distinct",
+          "purpose": "区分未恢复、删失与算法失败"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_hidden_boundaries_and_no_lifetime_reset",
+          "purpose": "变化不重置 learner 或暴露边界"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_proposed_adapter_cannot_be_frozen",
+          "purpose": "阻止未就绪适配提案冻结成可执行承诺"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate",
+            "protocols/streamrate-development.json",
+            "--external"
+          ],
+          "purpose": "只验证 StreamRate 开发提案结构",
+          "mode": "read_only",
+          "requires": []
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "plan",
+            "protocols/representation-development.json",
+            "--external",
+            "--summary"
+          ],
+          "purpose": "预览表征记忆提案人口与预算，不运行",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "protocols/streamrate-development.json",
+        "protocols/representation-development.json",
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "两个实际项目的外部训练适配器仍未实现",
+        "提案尚未登记为正式实验且不构成实际结果",
+        "没有完整遗忘、可塑性或跨生命期生存分析后端"
+      ]
+    },
+    {
+      "id": "extension-prediction-abstraction-options",
+      "kind": "extension",
+      "title": "GVF、抽象、子目标与 options",
+      "question": "预测知识如何成为合法、有用且可持续维护的时间抽象能力？",
+      "principle": "先核问题定义与真值，再核可达性、时间边界和消费者，最后测原始控制收益与长期维护。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/prediction-abstraction-options.md",
+        "docs/mechanism-design.md",
+        "docs/navigation-map.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "验证预测与控制模块的声明结构；不是 GVF 或 option 学习器"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_template_is_structurally_valid_but_only_proposed",
+          "purpose": "模板通过结构检查仍保留 proposed 状态"
+        },
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_delayed_recurrent_cycle_is_allowed",
+          "purpose": "显式延迟信息循环允许存在"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "templates/module-contract.json"
+          ],
+          "purpose": "检查可扩展模块合同示例，不执行 GVF 或 option",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "templates/module-card.md",
+        "catalog/modules.json",
+        "examples/designs/gvf-option-ablation.json"
+      ],
+      "gaps": [
+        "没有原生 GVF、option、抽象或子目标学习实现",
+        "设计卡不是 run 接受的实验协议",
+        "SMDP 时间折扣与问题版本迁移须由适配器新增语义测试"
+      ]
+    },
+    {
+      "id": "extension-planning-architecture",
+      "kind": "extension",
+      "title": "模型、规划与完整架构",
+      "question": "模型学习、搜索计算和模块联合适应各自贡献了什么？",
+      "principle": "明确数据与计算双预算；固定/在线模型与规划形成对照；原子持久状态和声明信息权限须独立核验。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/planning-and-architecture.md",
+        "docs/mechanism-design.md",
+        "docs/extension-guide.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/contracts.py",
+          "symbol": "validate_modules",
+          "purpose": "检查模块连接、即时环与诊断污染"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "接收已锁定人口的外部证据，不验证规划本身"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_algebraic_same_cycle_is_rejected",
+          "purpose": "拒绝未声明延迟的同周期循环"
+        },
+        {
+          "path": "tests/test_contracts.py",
+          "symbol": "ContractTests.test_delaying_privileged_information_does_not_make_it_legal",
+          "purpose": "延迟不消除信息特权"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_external_import_complete_bound_raw_population",
+          "purpose": "外部结果绑定完整人口与原始证据"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "validate-modules",
+            "templates/module-contract.json"
+          ],
+          "purpose": "核对示例架构的声明结构",
+          "mode": "read_only",
+          "requires": []
+        },
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "import-results",
+            "--help"
+          ],
+          "purpose": "查看外部架构结果导入合同入口",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "templates/module-contract.json",
+        "catalog/modules.json",
+        "examples/external-producer.json",
+        "examples/external-result.json"
+      ],
+      "gaps": [
+        "没有原生世界模型、Dyna、MuZero、Dreamer 或搜索执行器",
+        "模型调用/节点/通信/延迟需外部生产者计量",
+        "未实现整个持续架构的原子快照恢复验证"
+      ]
+    },
+    {
+      "id": "extension-multi-agent",
+      "kind": "extension",
+      "title": "多智能体与持续协作",
+      "question": "方法是否改善独立训练团队对新队友或对手的协作，并遵守部署信息与资源制度？",
+      "principle": "区分团队信用、模块信用与元信用；CTDE 权限显式；联合人口为重复单位并保留 cross-play 矩阵。",
+      "support": "human_protocol",
+      "docs": [
+        "docs/multi-agent.md",
+        "docs/planning-and-architecture.md",
+        "docs/mechanism-design.md",
+        "docs/external-adapters.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "import_results",
+          "purpose": "通用外部证据容器可用于团队结果；不提供 MARL 时钟或训练"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "可作固定任务 paired-seed 摘要；不支持交叉人口随机效应"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_external_eval_cannot_be_zero_or_incomplete",
+          "purpose": "通用外部结果不得漏掉注册评价；不是 MARL 正确性测试"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "import-results",
+            "--help"
+          ],
+          "purpose": "查看通用外部导入参数，实际 MARL 接入前仍需团队级协议",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "examples/designs/marl-crossplay.json",
+        "templates/module-card.md"
+      ],
+      "gaps": [
+        "没有原生 MARL 算法、环境适配器或团队身份测试",
+        "没有 cross-play 聚类、交叉随机效应或 exploitability 分析",
+        "设计卡尚不是可执行实验协议，通用导入器不验证 CTDE 信息流"
+      ]
+    },
+    {
+      "id": "extension-persistent-evidence",
+      "kind": "extension",
+      "title": "持久学习、检索与任务内计算的分离",
+      "question": "未来收益来自持久学习、已有库的检索，还是更多任务内计算？",
+      "principle": "用参数学习、记忆写入和检索开关分离知识来源；比较新 C 与旧 A；计入发现、维护与搜索全部成本。",
+      "support": "partial_tooling",
+      "docs": [
+        "docs/mechanism-design.md",
+        "docs/continual.md",
+        "docs/continual-project-playbooks.md",
+        "docs/prediction-abstraction-options.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/continual_metrics.py",
+          "symbol": "summarize",
+          "purpose": "只支持原始生命期与恢复基础诊断，不自动识别持久学习因果来源"
+        },
+        {
+          "path": "rlworkbench/engines.py",
+          "symbol": "_run_bandit",
+          "purpose": "最小在线生命期累计奖励路径"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_continual_metrics.py",
+          "symbol": "ContinualMetricTests.test_full_lifetime_and_segments_include_every_raw_reward",
+          "purpose": "初期与适应期奖励不从主结果中删除"
+        },
+        {
+          "path": "tests/test_engines.py",
+          "symbol": "EngineTests.test_eval_budget_does_not_change_training",
+          "purpose": "独立诊断评价不改变原训练轨迹"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "continual-metrics",
+            "--help"
+          ],
+          "purpose": "查看生命期日志分析参数；需真实日志才产生诊断",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "templates/research-card.md",
+        "templates/module-card.md",
+        "profiles/continual.json"
+      ],
+      "gaps": [
+        "没有持久记忆开关矩阵的训练后端",
+        "窗口恢复不能替代迁移、保留、新规则学习或可塑性证据",
+        "完整架构的学习/检索/计算成本须外部登记"
+      ]
+    },
+    {
+      "id": "extension-agent-iteration",
+      "kind": "extension",
+      "title": "人类与 agent 的证据驱动迭代",
+      "question": "如何让每轮结果改变下一项有边界的研究决定，而不是自动扩大训练？",
+      "principle": "保留、修订、确认或停止引用实际证据；继承已成立的有限结论并重检受影响假设。",
+      "support": "implemented_tool",
+      "docs": [
+        "AGENTS.md",
+        "docs/iteration.md",
+        "docs/mechanism-design.md",
+        "skills/rl-research-iteration/SKILL.md"
+      ],
+      "code": [
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "next_protocol",
+          "purpose": "依据显式决策生成不冻结且不执行的后继草案"
+        },
+        {
+          "path": "rlworkbench/core.py",
+          "symbol": "audit",
+          "purpose": "核查已登记人口、结果身份与文件摘要"
+        },
+        {
+          "path": "rlworkbench/analysis.py",
+          "symbol": "compare",
+          "purpose": "输出固定任务配对效应摘要，供人工研究决定"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_next_never_runs_and_confirmation_uses_reserved_seeds",
+          "purpose": "后继不运行且确认使用保留种子"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_failed_jobs_are_kept_not_dropped",
+          "purpose": "保留失败人口"
+        },
+        {
+          "path": "tests/test_workflow.py",
+          "symbol": "WorkflowTests.test_missing_jobs_cannot_be_silently_scored",
+          "purpose": "拒绝对未完整人口静默评分"
+        }
+      ],
+      "commands": [
+        {
+          "argv": [
+            "python3",
+            "-m",
+            "rlworkbench",
+            "next",
+            "--help"
+          ],
+          "purpose": "查看明确决策到下一研究的工具参数",
+          "mode": "read_only",
+          "requires": []
+        }
+      ],
+      "assets": [
+        "templates/iteration-log.md",
+        "templates/decision-record.md",
+        "templates/decision.json",
+        "templates/research-card.md"
+      ],
+      "gaps": [
+        "不会自动证明机制、选择科学问题或批准算力",
+        "保留种子和哈希不能替代任务分布隔离或团队测试访问纪律",
+        "implemented_tool 只指后继草案与审计工具，不表示整个科学迭代可以自动完成"
+      ]
+    }
+  ]
+}

@@ -9,6 +9,11 @@
 3. 理论或机制改动读 `docs/algorithm-design.md`、`docs/testing.md`；统计读 `docs/statistics.md`。
 4. 如需执行，按 `docs/iteration.md` 选小型机制实验或完整效能实验。调用 `python -m rlworkbench --help` 确认当前命令。
 5. 涉及GVF、options、子目标、抽象、规划或多智能体，先读 `docs/navigation-map.md`，再路由到对应手册；补 `templates/module-card.md` 和机器契约。通过结构验证不代表模块已实现或整体架构有效。
+6. 整体机制思路读 `docs/mechanism-design.md`；原调研 37 章全文在 `docs/handbook.md`。修改代码前运行 `python3 scripts/handbook.py find 文件名或机制名 --json`，按 `purpose` 和 `gaps` 了解它实际承接的原则、测试和能力边界。完整文件反查在 `docs/handbook-code-index.md`。
+
+## 维护原理到工具的对应
+
+按 `docs/handbook-maintenance.md` 编辑专题文档与 `docs/traceability/chapters-*.json` / `extensions.json`。原始 `docs/research-handbook.html` 是不可覆盖的证据快照；全文阅读版和双向索引为生成物。函数移动、新工具接入或测试重命名后，运行 `python3 scripts/handbook.py build` 和 `python3 scripts/handbook.py check`，并检查受影响的职责与缺口，不能只修到路径存在。CLI 语法通过不表示命令前提已满足，也不会自动运行任何命令。
 
 ## 研究纪律
 

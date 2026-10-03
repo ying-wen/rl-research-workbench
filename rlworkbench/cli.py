@@ -119,7 +119,9 @@ def main(argv=None):
                     event = json.loads(line)
                     if not isinstance(event, dict):
                         raise core.ProtocolError("events must be JSON objects")
-                    if event.get("type") == "transition" and event.get("stream") == "training":
+                    # Native engines emit "train"; retain "training" for
+                    # existing external producers using the documented alias.
+                    if event.get("type") == "transition" and event.get("stream") in {"train", "training"}:
                         if type(event.get("env_step")) is not int or event["env_step"] != len(rewards)+1:
                             raise core.ProtocolError("training event clock must be contiguous from 1")
                         rewards.append(event["reward"])

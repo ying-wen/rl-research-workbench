@@ -4,6 +4,8 @@
 
 先读 [十分钟开始](docs/start-here.md)。持续强化学习项目直接进入 [持续实验原则](docs/continual.md) 和 [两个项目的生命期实验方案](docs/continual-project-playbooks.md)。它们分别处理 **StreamRate 的学习控制与元信用**、**网络表征与记忆结构**。
 
+整体思路从 [机制设计与推导桥](docs/mechanism-design.md) 开始。原调研手册的 **37 章全文** 已转成 [GitHub 可直接阅读的版本](docs/handbook.md)，逐章连接 [实践文档、代码、测试和命令](docs/handbook-code-map.md)；修改实现前可从 [反向索引](docs/handbook-code-index.md) 查回原理。下载仓库后打开 [交互阅读版](docs/handbook/index.html)，可筛选正文并展开每章的工具对应和未实现边界。
+
 | 你要做什么 | 入口 | 产物 |
 |---|---|---|
 | 开始一个问题 | [算法设计](docs/algorithm-design.md) · [研究卡](templates/research-card.md) | 原目标、合法信息、竞争解释、可推翻条件 |
@@ -14,7 +16,17 @@
 | 执行并分析 | [迭代流程](docs/iteration.md) · [统计手册](docs/statistics.md) | 锁定协议、完整人口、失败记录、配对分析 |
 | 让 agent 接手 | [AGENTS.md](AGENTS.md) · [研究技能](skills/rl-research-iteration/SKILL.md) | 可追溯决策与短交接，不自动扩算力 |
 | 接入新方法和环境 | [扩展指南](docs/extension-guide.md) · [目录](docs/catalog.md) · [外部接入](docs/external-adapters.md) | 独立适配器、版本与能力边界、原始证据 |
-| 查论据 | [完整调研快照](docs/research-handbook.html) · [81 条来源记录](docs/sources.json) | 论文、讲义、实现经验与适用边界 |
+| 查论据与实现 | [完整手册](docs/handbook.md) · [逐章映射](docs/handbook-code-map.md) · [81 条来源记录](docs/sources.json) | 原理、论文、代码职责、证据与能力缺口 |
+
+人类和 agent 可用同一查询工具（只读，不启动实验）：
+
+```bash
+python3 scripts/handbook.py find GVF
+python3 scripts/handbook.py find rlworkbench/continual_metrics.py --json
+python3 scripts/handbook.py check
+```
+
+映射含 37 章与 7 类机制扩展；CI 检查原始快照、章节、函数、测试符号和生成索引是否一致。[维护流程](docs/handbook-maintenance.md) 说明如何让新算法和新工具持续接入。
 
 ## 先运行一个小实验
 

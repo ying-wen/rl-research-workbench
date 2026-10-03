@@ -1,0 +1,79 @@
+# 空白协议模板：填写所有 null，并在正式确认前锁定。
+# 示例字段不是已执行实验，也不是统一社区标准。
+schema_version: 1
+study_id: null
+claim: null
+falsifying_outcome: null
+research_track: null  # classical / deep / continual / other
+estimand:
+  population: null
+  target: null  # fixed_policy / learning_lifetime / tuning_procedure
+  primary_metric: null
+  direction: null
+  minimum_meaningful_effect: null
+  horizon: null
+  window_or_auc_rule: null
+  task_weights: null
+environment:
+  ids_and_versions: []
+  source_commit: null
+  wrappers_in_order: []
+  reward_definition: null
+  evaluation_reward: null
+  observation_and_action_contract: null
+  information_privileges: []
+  termination_truncation_autoreset: null
+  step_unit: null
+  reset_and_rebirth_rules: null
+learner:
+  methods: []
+  source_commit_and_dirty_diff_hash: null
+  update_timing: null
+  adaptive_components: []
+  checkpoint_state_inventory: []
+  replay_and_memory_limits: null
+  recurrent_state_boundary: null
+splits:
+  development_tasks_and_lifetimes: []
+  tuning_tasks_seeds_and_allowed_prefix: null
+  sealed_confirmation_tasks_and_seeds: null
+selection:
+  search_space_and_distribution: null
+  method_and_budget: null
+  selection_metric: null
+  checkpoint_selection_rule: null
+  outer_selection_repetitions: null
+  total_interaction_compute_and_manual_costs: null
+confirmation:
+  independent_unit: null
+  planned_units: null
+  precision_or_power_justification: null
+  pairing_and_shared_ancestors: null
+  stopping_rule: null
+  primary_comparison_family: []
+  interval_or_test: null
+  resampling_hierarchy: null
+  multiple_comparison_rule: null
+  failure_utility_mapping: null
+  infrastructure_rerun_rule: null
+  missing_data_rule: null
+evaluation:
+  online_or_frozen_or_both: null
+  frozen_components: []
+  diagnostic_feedback_prohibited: true
+  separate_rng_and_state_isolation: null
+  evaluation_budget: null
+resources:
+  total_environment_interactions: null
+  gradient_updates_and_batch_size: null
+  planning_or_model_rollouts: null
+  memory_bytes_limit: null
+  decision_latency_limit: null
+  wall_clock_budget_and_hardware: null
+deliverables:
+  raw_runs_and_failure_register: null
+  task_level_and_aggregate_results: null
+  mechanism_controls_and_negative_results: null
+  resource_curves: null
+  analysis_entrypoint_and_environment_lock: null
+  claim_evidence_map: null
