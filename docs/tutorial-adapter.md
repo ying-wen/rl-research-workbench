@@ -10,7 +10,7 @@
 
 ## 可运行流程
 
-以下命令在**包含 `rlworkbench/tutorial_adapter.py` 的 Workbench checkout 根目录**执行。教程独立实现要求Python 3.10+；Workbench基础包虽支持3.9，这条接入流程需满足教程要求。使用已有checkout或先获取Workbench基本仓库；本次新增适配器若尚未发布，普通远端clone不会自动包含它，须使用含本次改动的本地checkout或已更新版本。
+以下命令在**包含 `rlworkbench/tutorial_adapter.py` 的最新 Workbench checkout 根目录**执行；已有旧版本请先更新，并确认该文件存在。教程独立实现要求Python 3.10+；Workbench基础包虽支持3.9，这条接入流程需满足教程要求。
 
 源码根目录可以直接用 `python3 -m ...`，无需安装包。若希望安装，先创建隔离环境再执行 `python3 -m pip install -e .`。所有阶段都用同一Python解释器；深度算法先在该环境安装教程 `examples/deep_requirements.txt`，然后再plan/freeze，避免运行时的包版本锁拒绝。
 
