@@ -1,6 +1,6 @@
 # 从手册原理到代码与工具
 
-37 章与 7 类机制扩展均有明确映射。**人工协议、部分工具支持、所述工具已实现**描述的是支持范围，不是算法效能。所有命令只通过语法核验；带前提的命令需先准备真实数据。
+37 章与 8 类机制扩展均有明确映射。**人工协议、部分工具支持、所述工具已实现**描述的是支持范围，不是算法效能。所有命令只通过语法核验；带前提的命令需先准备真实数据。
 
 [全文阅读](handbook.md) · [整体机制设计](mechanism-design.md) · [反向索引](handbook-code-index.md) · [维护说明](handbook-maintenance.md)
 
@@ -41,6 +41,7 @@
 - [35 · 可复制模板与最小数据规范](#appendix-templates)
 - [36 · 精读路线与术语对照](#appendix-reading)
 - [37 · 来源登记与证据边界](#bibliography)
+- [教程独立算法与工作台的真实接入](#extension-tutorial-adapter)
 - [整体机制设计与推导桥](#extension-mechanism-design)
 - [两个项目的完整生命期研究](#extension-project-lifetimes)
 - [GVF、抽象、子目标与 options](#extension-prediction-abstraction-options)
@@ -1494,6 +1495,41 @@ python3 -m rlworkbench validate-modules templates/module-contract.json
 
 - 文献快照截至 2026-10-03；没有自动追踪上游论文、库版本或重新验证所有结论。
 - 源文献提供方法论依据，不证明本仓库两个项目草案或高层模块已经有效。
+
+<a id="extension-tutorial-adapter"></a>
+
+## 教程独立算法与工作台的真实接入
+
+**问题：** 怎样在不重写算法的条件下绑定教程源码、可比任务和完整人口？
+
+**原则：** 先锁定任务、指标、单位、预算与源身份，再执行可信本地实现；失败与未知结束分开。
+
+**当前支持：所述工具已实现。** 状态只描述下列子项；不表示本章全部方法已实现。
+
+**实践文档：** [docs/tutorial-adapter.md](../docs/tutorial-adapter.md) · [docs/external-adapters.md](../docs/external-adapters.md)
+
+**代码职责：**
+
+- [rlworkbench/tutorial_adapter.py · make_protocol](https://github.com/ying-wen/rl-research-workbench/blob/main/rlworkbench/tutorial_adapter.py#L42) — 从META生成同任务同指标同单位同预算的外部smoke协议，并绑定完整教程源码摘要。
+- [rlworkbench/tutorial_adapter.py · produce](https://github.com/ying-wen/rl-research-workbench/blob/main/rlworkbench/tutorial_adapter.py#L78) — 执行已锁定完整人口，保留原始记录与失败回执，交给既有外部导入。
+
+**对应测试：**
+
+- [tests/test_tutorial_adapter.py · TutorialAdapterTests.test_complete_population_imports_and_partial_failure_is_retained](https://github.com/ying-wen/rl-research-workbench/blob/main/tests/test_tutorial_adapter.py#L32) — 成功与中途失败均进入既有导入审计，拒绝覆盖旧attempt。
+- [tests/test_tutorial_adapter.py · TutorialAdapterTests.test_source_drift_rejected_before_creating_attempt](https://github.com/ying-wen/rl-research-workbench/blob/main/tests/test_tutorial_adapter.py#L56) — 源码漂移在新尝试创建前拒绝。
+
+**可用命令（从仓库根运行，花括号路径须替换）：**
+
+```bash
+python3 -m rlworkbench import-results --help
+```
+
+查看教程生产者完成后使用的既有全人口导入命令；生产者命令详见专题文档。 操作类型：`read_only`。
+
+**能力缺口与结论边界：**
+
+- 教学任务不等于原论文基准复现；META内部计步与评价语义仍需科学审阅。
+- 没有HPO、集群调度、完整解析依赖锁或checkpoint恢复。
 
 <a id="extension-mechanism-design"></a>
 

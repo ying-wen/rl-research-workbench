@@ -2,6 +2,26 @@
   "schema_version": 1,
   "entries": [
     {
+      "id": "extension-tutorial-adapter",
+      "kind": "extension",
+      "title": "教程独立算法与工作台的真实接入",
+      "question": "怎样在不重写算法的条件下绑定教程源码、可比任务和完整人口？",
+      "principle": "先锁定任务、指标、单位、预算与源身份，再执行可信本地实现；失败与未知结束分开。",
+      "support": "implemented_tool",
+      "docs": ["docs/tutorial-adapter.md", "docs/external-adapters.md"],
+      "code": [
+        {"path": "rlworkbench/tutorial_adapter.py", "symbol": "make_protocol", "purpose": "从META生成同任务同指标同单位同预算的外部smoke协议，并绑定完整教程源码摘要。"},
+        {"path": "rlworkbench/tutorial_adapter.py", "symbol": "produce", "purpose": "执行已锁定完整人口，保留原始记录与失败回执，交给既有外部导入。"}
+      ],
+      "tests": [
+        {"path": "tests/test_tutorial_adapter.py", "symbol": "TutorialAdapterTests.test_complete_population_imports_and_partial_failure_is_retained", "purpose": "成功与中途失败均进入既有导入审计，拒绝覆盖旧attempt。"},
+        {"path": "tests/test_tutorial_adapter.py", "symbol": "TutorialAdapterTests.test_source_drift_rejected_before_creating_attempt", "purpose": "源码漂移在新尝试创建前拒绝。"}
+      ],
+      "commands": [{"argv": ["python3", "-m", "rlworkbench", "import-results", "--help"], "purpose": "查看教程生产者完成后使用的既有全人口导入命令；生产者命令详见专题文档。", "mode": "read_only", "requires": []}],
+      "assets": [],
+      "gaps": ["教学任务不等于原论文基准复现；META内部计步与评价语义仍需科学审阅。", "没有HPO、集群调度、完整解析依赖锁或checkpoint恢复。"]
+    },
+    {
       "id": "extension-mechanism-design",
       "kind": "extension",
       "title": "整体机制设计与推导桥",

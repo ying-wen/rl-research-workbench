@@ -6,7 +6,7 @@
   "chapter_count": 37,
   "source_record_count": 81,
   "template_count": 6,
-  "extension_count": 7,
+  "extension_count": 8,
   "content_policy": "original HTML preserved byte-for-byte; complete section text converted; code maps are maintained separately",
   "mapping_files": [
     "docs/traceability/chapters-core.json",

@@ -136,6 +136,7 @@ python3 scripts/handbook.py check
 - [29 · 实验执行：从预注册到独立确认](handbook-code-map.md#ops-workflow) · `docs`
 - [31 · 扩展场景：离线选择、真实系统、多智能体与大模型智能体](handbook-code-map.md#ops-extensions) · `docs`
 - [35 · 可复制模板与最小数据规范](handbook-code-map.md#appendix-templates) · `docs`
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `docs`
 - [多智能体与持续协作](handbook-code-map.md#extension-multi-agent) · `docs`
 
 ## docs/iteration.md
@@ -300,6 +301,12 @@ python3 scripts/handbook.py check
 - [33 · 课题组可直接使用的检查清单](handbook-code-map.md#ops-checklist) · `docs`
 - [34 · 补充原则：遗憾、能力泛化与压力测试](handbook-code-map.md#appendix-comparators) · `docs`
 - [整体机制设计与推导桥](handbook-code-map.md#extension-mechanism-design) · `docs`
+
+## docs/tutorial-adapter.md
+
+[打开文件](../docs/tutorial-adapter.md)
+
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `docs`
 
 ## examples/deep-requirements.txt
 
@@ -511,6 +518,13 @@ python3 scripts/handbook.py check
 - [两个项目的完整生命期研究](handbook-code-map.md#extension-project-lifetimes) · `code` · `BanditLearner` — 不接收变化标签的最小在线估计器
 - [持久学习、检索与任务内计算的分离](handbook-code-map.md#extension-persistent-evidence) · `code` · `_run_bandit` — 最小在线生命期累计奖励路径
 
+## rlworkbench/tutorial_adapter.py
+
+[打开文件](../rlworkbench/tutorial_adapter.py)
+
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `code` · `make_protocol` — 从META生成同任务同指标同单位同预算的外部smoke协议，并绑定完整教程源码摘要。
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `code` · `produce` — 执行已锁定完整人口，保留原始记录与失败回执，交给既有外部导入。
+
 ## schemas/protocol.schema.json
 
 [打开文件](../schemas/protocol.schema.json)
@@ -668,6 +682,13 @@ python3 scripts/handbook.py check
 - [整体机制设计与推导桥](handbook-code-map.md#extension-mechanism-design) · `tests` · `EngineTests.test_external_time_limit_preserves_actual_observation_and_bootstrap` — 外部截断不冒充任务终止
 - [两个项目的完整生命期研究](handbook-code-map.md#extension-project-lifetimes) · `tests` · `EngineTests.test_hidden_boundaries_and_no_lifetime_reset` — 变化不重置 learner 或暴露边界
 - [持久学习、检索与任务内计算的分离](handbook-code-map.md#extension-persistent-evidence) · `tests` · `EngineTests.test_eval_budget_does_not_change_training` — 独立诊断评价不改变原训练轨迹
+
+## tests/test_tutorial_adapter.py
+
+[打开文件](../tests/test_tutorial_adapter.py)
+
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `tests` · `TutorialAdapterTests.test_complete_population_imports_and_partial_failure_is_retained` — 成功与中途失败均进入既有导入审计，拒绝覆盖旧attempt。
+- [教程独立算法与工作台的真实接入](handbook-code-map.md#extension-tutorial-adapter) · `tests` · `TutorialAdapterTests.test_source_drift_rejected_before_creating_attempt` — 源码漂移在新尝试创建前拒绝。
 
 ## tests/test_workflow.py
 
